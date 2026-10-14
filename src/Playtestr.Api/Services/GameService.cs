@@ -3,7 +3,7 @@ using Playtestr.Api.Dtos;
 
 namespace Playtestr.Api.Services;
 
-public class GameService
+public class GameService : IGameService
 {
     private readonly List<Game> _games =
     [
@@ -15,7 +15,7 @@ public class GameService
 
     public IReadOnlyList<Game> GetAll() => _games;
 
-    public Game? GetById(int Id) => _games.FirstOrDefault(g => g.Id == Id);
+    public Game? GetById(int id) => _games.FirstOrDefault(g => g.Id == id);
 
     public Game Add(CreateGameRequest request)
     {
