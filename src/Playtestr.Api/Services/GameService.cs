@@ -6,11 +6,11 @@ namespace Playtestr.Api.Services;
 public class GameService : IGameService
 {
     private readonly List<Game> _games =
-    [
-        new(0, "Cyberpunk", "COOL SHOOTA", 2020),
-        new(1, "Witcher 3", "Old guy with sword", 2015),
-        new(2, "Counter Strike", "Best shoota", 2010)
-    ];
+[
+    new() { Id = 0, Name = "Cyberpunk", Description = "COOL SHOOTA", ReleaseYear = 2020 },
+    new() { Id = 1, Name = "Witcher 3", Description = "grey hair guy", ReleaseYear = 2015 },
+    new() { Id = 2, Name = "Stardew Valley", Description = "cozy farming", ReleaseYear = 2015 }
+];
     private int _nextId = 3;
 
     public IReadOnlyList<Game> GetAll() => _games;
@@ -19,19 +19,26 @@ public class GameService : IGameService
 
     public Game Add(CreateGameRequest request)
     {
-        var newGame = new Game(_nextId++, request.Name, request.Description, request.ReleaseYear);
+        var newGame = new Game
+        {
+            Id = _nextId++,
+            Name = request.Name,
+            Description = request.Description,
+            ReleaseYear = request.ReleaseYear
+        };
         _games.Add(newGame);
         return newGame;
     }
 
     public Game? Update(int id, CreateGameRequest request)
     {
-        var index = _games.FindIndex(g => g.Id == id);
-        if (index == -1) return null; // Not Found
+        var game = GetById(id);
+        if (game is null) return null;
 
-        var updated = new Game(id, request.Name, request.Description, request.ReleaseYear);
-        _games[index] = updated;
-        return updated;
+        game.Name = request.Name;
+        game.Description = request.Description;
+        game.ReleaseYear = request.ReleaseYear;
+        return game;
     }
 
     public bool Delete(int id)

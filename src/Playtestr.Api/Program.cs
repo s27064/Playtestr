@@ -1,6 +1,8 @@
 using Scalar.AspNetCore;
 using Playtestr.Api.Dtos;
 using Playtestr.Api.Services;
+using Playtestr.Api.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddSingleton<IGameService, GameService>();
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("Default")));   
 
 var app = builder.Build();
 
