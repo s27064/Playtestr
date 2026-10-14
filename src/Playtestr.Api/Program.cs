@@ -49,6 +49,18 @@ app.MapPost("/games", (CreateGameRequest request) =>
 })
 .WithName("PostGame");
 
+app.MapPut("/games/{id}", (int id, CreateGameRequest request) =>
+{
+    var index = gameList.FindIndex(g => g.id == id);
+    if (index == -1) return Results.NotFound("Game with this id has not been found!");
+
+    var newGame = new Game(id, request.Name, request.Description, request.releaseYear);
+    gameList[index] = newGame;
+
+    return Results.Ok(newGame);
+})
+.WithName("PutGame");
+
 app.Run();
 
 record Game(int id, string Name, string Description, int releaseYear);
