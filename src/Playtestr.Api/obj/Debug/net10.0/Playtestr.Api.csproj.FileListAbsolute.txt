@@ -31,3 +31,5 @@
 /home/olaf/Documents/Playtestr/src/Playtestr.Api/obj/Debug/net10.0/Playtestr.Api.pdb
 /home/olaf/Documents/Playtestr/src/Playtestr.Api/obj/Debug/net10.0/Playtestr.Api.genruntimeconfig.cache
 /home/olaf/Documents/Playtestr/src/Playtestr.Api/obj/Debug/net10.0/ref/Playtestr.Api.dll
+/home/olaf/Documents/Playtestr/src/Playtestr.Api/bin/Debug/net10.0/Scalar.AspNetCore.dll
+/home/olaf/Documents/Playtestr/src/Playtestr.Api/obj/Debug/net10.0/Playtestr.Api.sourcelink.json

@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "4ZOl+jfV7Jc=",
+  "dgSpecHash": "Dh+V9YA0p1M=",
   "success": true,
   "projectFilePath": "/home/olaf/Documents/Playtestr/src/Playtestr.Api/Playtestr.Api.csproj",
   "expectedPackageFiles": [
     "/home/olaf/.nuget/packages/microsoft.aspnetcore.openapi/10.0.12/microsoft.aspnetcore.openapi.10.0.12.nupkg.sha512",
-    "/home/olaf/.nuget/packages/microsoft.openapi/2.12.0/microsoft.openapi.2.12.0.nupkg.sha512"
+    "/home/olaf/.nuget/packages/microsoft.openapi/2.12.0/microsoft.openapi.2.12.0.nupkg.sha512",
+    "/home/olaf/.nuget/packages/scalar.aspnetcore/2.18.0/scalar.aspnetcore.2.18.0.nupkg.sha512"
   ],
   "logs": []
 }

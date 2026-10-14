@@ -1,3 +1,5 @@
+using Scalar.AspNetCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -10,32 +12,44 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.MapScalarApiReference();
 }
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
+var gameList = new List<Game>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+    new Game(0, "Cyberpunk", "COOL SHOOTA", 2019),
+    new Game(1, "Witcher 3", "Old guy with sword", 2015),
+    new Game(2, "Counter Strike", "Best shoota", 2010)
 };
 
-app.MapGet("/weatherforecast", () =>
+app.MapGet("/games", () =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
+    return gameList;
 })
-.WithName("GetWeatherForecast");
+.WithName("GetGames");
+
+app.MapGet("/games/{id}", (int id) =>
+{
+    var game = gameList.FirstOrDefault(g=>g.id == id);
+    return game is null ? Results.NotFound() : Results.Ok(game);
+})
+.WithName("GetGame");
+
+app.MapPost("/games", (CreateGameRequest request) =>
+{
+    if (string.IsNullOrEmpty(request.Name)) return Results.BadRequest("Name is required");
+    if (string.IsNullOrEmpty(request.Description)) return Results.BadRequest("Description is required");
+
+    var game = new Game(gameList.Count, request.Name, request.Description, request.releaseYear);
+    gameList.Add(game);
+
+    return Results.Ok(game);
+})
+.WithName("PostGame");
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+record Game(int id, string Name, string Description, int releaseYear);
+record CreateGameRequest(string Name, string Description, int releaseYear);
