@@ -1,10 +1,14 @@
 using Scalar.AspNetCore;
+using Playtestr.Api.Models;
+using Playtestr.Api.Dtos;
+using Playtestr.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddSingleton<GameService>();
 
 var app = builder.Build();
 
@@ -17,61 +21,41 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var gameList = new List<Game>
+// GET
+app.MapGet("/games", (GameService service) => service.GetAll());
+app.MapGet("/games/{id}", (int id, GameService service) =>
 {
-    new Game(0, "Cyberpunk", "COOL SHOOTA", 2019),
-    new Game(1, "Witcher 3", "Old guy with sword", 2015),
-    new Game(2, "Counter Strike", "Best shoota", 2010)
-};
-
-app.MapGet("/games", () =>
-{
-    return gameList;
-})
-.WithName("GetGames");
-
-app.MapGet("/games/{id}", (int id) =>
-{
-    var game = gameList.FirstOrDefault(g=>g.id == id);
+    var game = service.GetById(id);
     return game is null ? Results.NotFound() : Results.Ok(game);
-})
-.WithName("GetGame");
+});
 
-app.MapPost("/games", (CreateGameRequest request) =>
+// POST
+app.MapPost("/games", (CreateGameRequest request, GameService service) =>
 {
-    if (string.IsNullOrEmpty(request.Name)) return Results.BadRequest("Name is required");
-    if (string.IsNullOrEmpty(request.Description)) return Results.BadRequest("Description is required");
+    if (string.IsNullOrWhiteSpace(request.Name)) return Results.BadRequest("Name is required!");
+    if (string.IsNullOrWhiteSpace(request.Description)) return Results.BadRequest("Description is required!");
+    
+    var game = service.Add(request);
+    return Results.Created($"/games/{game.Id}", game);
+});
 
-    var game = new Game(gameList.Count, request.Name, request.Description, request.releaseYear);
-    gameList.Add(game);
+// PUT
+app.MapPut("/games/{id}", (int id, CreateGameRequest request, GameService service) =>
+{
+    if (string.IsNullOrWhiteSpace(request.Name)) return Results.BadRequest("Name is required!");
+    if (string.IsNullOrWhiteSpace(request.Description)) return Results.BadRequest("Description is required!");
+
+    var game = service.Update(id, request);
+    if (game is null) return Results.NotFound();
 
     return Results.Ok(game);
-})
-.WithName("PostGame");
+});
 
-app.MapPut("/games/{id}", (int id, CreateGameRequest request) =>
+// DELETE
+app.MapDelete("/games/{id}", (int id, GameService service) =>
 {
-    var index = gameList.FindIndex(g => g.id == id);
-    if (index == -1) return Results.NotFound("Game with this id has not been found!");
-
-    var newGame = new Game(id, request.Name, request.Description, request.releaseYear);
-    gameList[index] = newGame;
-
-    return Results.Ok(newGame);
-})
-.WithName("PutGame");
-
-app.MapDelete("/games/{id}", (int id) =>
-{
-    var index = gameList.FindIndex(g => g.id == id);
-    if (index == -1) return Results.NotFound("Game with this id has not been found!");
-
-    gameList.RemoveAt(index);
-    return Results.NoContent();
-})
-.WithName("DeleteGame");
+    var success = service.Delete(id);
+    return success ? Results.NoContent() : Results.NotFound();
+});
 
 app.Run();
-
-record Game(int id, string Name, string Description, int releaseYear);
-record CreateGameRequest(string Name, string Description, int releaseYear);
