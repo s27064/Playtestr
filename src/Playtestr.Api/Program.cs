@@ -37,9 +37,6 @@ app.MapGet("/games/{id}", async (int id, IGameService service) =>
 // POST
 app.MapPost("/games", async (CreateGameRequest request, IGameService service) =>
 {
-    if (string.IsNullOrWhiteSpace(request.Name)) return Results.BadRequest("Name is required!");
-    if (string.IsNullOrWhiteSpace(request.Description)) return Results.BadRequest("Description is required!");
-    
     var game = await service.AddAsync(request);
     return Results.Created($"/games/{game.Id}", game);
 });
@@ -47,9 +44,6 @@ app.MapPost("/games", async (CreateGameRequest request, IGameService service) =>
 // PUT
 app.MapPut("/games/{id}", async (int id, CreateGameRequest request, IGameService service) =>
 {
-    if (string.IsNullOrWhiteSpace(request.Name)) return Results.BadRequest("Name is required!");
-    if (string.IsNullOrWhiteSpace(request.Description)) return Results.BadRequest("Description is required!");
-
     var game = await service.UpdateAsync(id, request);
     if (game is null) return Results.NotFound();
 
