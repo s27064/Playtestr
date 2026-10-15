@@ -4,6 +4,7 @@ using Playtestr.Api.Services;
 using Playtestr.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Playtestr.Api.Endpoints;
+using Playtestr.Api.Services.Playtests;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<IPlaytestService, PlaytestService>();
 builder.Services.AddValidation();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -29,5 +31,6 @@ app.UseHttpsRedirection();
 
 //Endpoints
 app.MapGameEndpoints();
+app.MapPlaytestEndpoints();
 
 app.Run();
