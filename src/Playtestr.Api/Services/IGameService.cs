@@ -5,9 +5,9 @@ namespace Playtestr.Api.Services;
 
 public interface IGameService
 {
-    IReadOnlyList<Game> GetAll();
-    Game? GetById(int id);
-    Game Add(CreateGameRequest request);
-    Game? Update(int id, CreateGameRequest request);
-    bool Delete(int id);
+    Task<IReadOnlyList<Game>> GetAll();
+    Task<Game?> GetById(int id);
+    Task<Game> Add(CreateGameRequest request);
+    Task<Game?> Update(int id, CreateGameRequest request);
+    Task<bool> Delete(int id);
 }
