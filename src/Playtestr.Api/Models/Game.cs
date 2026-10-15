@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Playtestr.Api.Models;
 
 public class Game
