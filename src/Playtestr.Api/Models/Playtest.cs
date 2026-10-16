@@ -10,4 +10,8 @@ public class Playtest
     //Game
     public int GameId {get; set;}
     public Game Game {get; set;} = null!;
+
+    public List<Question> Questions {get; set;} = [];
+
+    public List<Response> Responses {get; set;} = [];
 }

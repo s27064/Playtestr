@@ -17,6 +17,33 @@ namespace Playtestr.Api.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.13");
 
+            modelBuilder.Entity("Playtestr.Api.Models.Answer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("Rating")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ResponseId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestionId");
+
+                    b.HasIndex("ResponseId");
+
+                    b.ToTable("Answers");
+                });
+
             modelBuilder.Entity("Playtestr.Api.Models.Game", b =>
                 {
                     b.Property<int>("Id")
@@ -66,6 +93,71 @@ namespace Playtestr.Api.Migrations
                     b.ToTable("Playtests");
                 });
 
+            modelBuilder.Entity("Playtestr.Api.Models.Question", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PlaytestId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlaytestId");
+
+                    b.ToTable("Questions");
+                });
+
+            modelBuilder.Entity("Playtestr.Api.Models.Response", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PlaytestId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("SubmittedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TesterName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlaytestId");
+
+                    b.ToTable("Responses");
+                });
+
+            modelBuilder.Entity("Playtestr.Api.Models.Answer", b =>
+                {
+                    b.HasOne("Playtestr.Api.Models.Question", "Question")
+                        .WithMany()
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Playtestr.Api.Models.Response", "Response")
+                        .WithMany("Answers")
+                        .HasForeignKey("ResponseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Question");
+
+                    b.Navigation("Response");
+                });
+
             modelBuilder.Entity("Playtestr.Api.Models.Playtest", b =>
                 {
                     b.HasOne("Playtestr.Api.Models.Game", "Game")
@@ -77,9 +169,43 @@ namespace Playtestr.Api.Migrations
                     b.Navigation("Game");
                 });
 
+            modelBuilder.Entity("Playtestr.Api.Models.Question", b =>
+                {
+                    b.HasOne("Playtestr.Api.Models.Playtest", "Playtest")
+                        .WithMany("Questions")
+                        .HasForeignKey("PlaytestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Playtest");
+                });
+
+            modelBuilder.Entity("Playtestr.Api.Models.Response", b =>
+                {
+                    b.HasOne("Playtestr.Api.Models.Playtest", "Playtest")
+                        .WithMany("Responses")
+                        .HasForeignKey("PlaytestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Playtest");
+                });
+
             modelBuilder.Entity("Playtestr.Api.Models.Game", b =>
                 {
                     b.Navigation("Playtests");
+                });
+
+            modelBuilder.Entity("Playtestr.Api.Models.Playtest", b =>
+                {
+                    b.Navigation("Questions");
+
+                    b.Navigation("Responses");
+                });
+
+            modelBuilder.Entity("Playtestr.Api.Models.Response", b =>
+                {
+                    b.Navigation("Answers");
                 });
 #pragma warning restore 612, 618
         }

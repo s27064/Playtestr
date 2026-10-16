@@ -7,4 +7,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 {
     public DbSet<Game> Games => Set<Game>();
     public DbSet<Playtest> Playtests => Set<Playtest>();
+    public DbSet<Question> Questions => Set<Question>();
+    public DbSet<Response> Responses => Set<Response>();
+    public DbSet<Answer> Answers => Set<Answer>();
 }
