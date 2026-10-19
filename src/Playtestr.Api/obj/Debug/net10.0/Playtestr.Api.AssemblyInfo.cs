@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Playtestr.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c1e970424ac73606a13f19c2f80c0167da115a34")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+44ebd016b0568325c66d8c99435668332d597ac9")]
 [assembly: System.Reflection.AssemblyProductAttribute("Playtestr.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Playtestr.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

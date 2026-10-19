@@ -1,15 +1,19 @@
 using Microsoft.EntityFrameworkCore;
 using Playtestr.Api.Data;
 using Playtestr.Api.Dtos;
+using Playtestr.Api.Mappings;
 using Playtestr.Api.Models;
 
 namespace Playtestr.Api.Services;
 
 public class GameService(AppDbContext context) : IGameService
 {
-    public async Task<IReadOnlyList<Game>> GetAllAsync() => await context.Games.ToListAsync();
+    public async Task<IReadOnlyList<GameResponse>> GetAllAsync() =>
+        await context.Games
+            .Select(g => g.ToResponse())
+            .ToListAsync();
 
-    public async Task<Game> AddAsync(CreateGameRequest request)
+    public async Task<GameResponse> AddAsync(CreateGameRequest request)
     {
         var newGame = new Game
         {
@@ -20,7 +24,7 @@ public class GameService(AppDbContext context) : IGameService
 
         context.Games.Add(newGame);
         await context.SaveChangesAsync();
-        return newGame;
+        return newGame.ToResponse();
     }
 
     public async Task<bool> DeleteAsync(int id)
@@ -32,9 +36,13 @@ public class GameService(AppDbContext context) : IGameService
         return true;
     }
 
-    public async Task<Game?> GetByIdAsync(int id) => await context.Games.FindAsync(id);
+    public async Task<GameResponse?> GetByIdAsync(int id)
+    {
+        var game = await context.Games.FindAsync(id);
+        return game?.ToResponse();
+    }
 
-    public async Task<Game?> UpdateAsync(int id, CreateGameRequest request)
+    public async Task<GameResponse?> UpdateAsync(int id, CreateGameRequest request)
     {
         var game = await context.Games.FindAsync(id);
         if (game is null) return null;
@@ -44,6 +52,6 @@ public class GameService(AppDbContext context) : IGameService
         game.ReleaseYear = request.ReleaseYear;
 
         await context.SaveChangesAsync();
-        return game;
+        return game.ToResponse();
     }
 }
