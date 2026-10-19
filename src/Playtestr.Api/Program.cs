@@ -5,6 +5,7 @@ using Playtestr.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Playtestr.Api.Endpoints;
 using Playtestr.Api.Services.Playtests;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,9 @@ builder.Services.AddValidation();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("Default")));   
+
+builder.Services.ConfigureHttpJsonOptions(options =>
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 var app = builder.Build();
 

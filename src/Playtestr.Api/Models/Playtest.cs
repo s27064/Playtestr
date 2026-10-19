@@ -7,11 +7,9 @@ public class Playtest
     public string Description {get; set;} = "";
     public DateTime CreatedAt {get; set;} = DateTime.UtcNow;
 
-    //Game
     public int GameId {get; set;}
     public Game Game {get; set;} = null!;
 
     public List<Question> Questions {get; set;} = [];
-
     public List<Response> Responses {get; set;} = [];
 }
