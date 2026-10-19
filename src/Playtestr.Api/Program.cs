@@ -1,6 +1,6 @@
 using Scalar.AspNetCore;
 using Playtestr.Api.Dtos;
-using Playtestr.Api.Services;
+using Playtestr.Api.Services.Games;
 using Playtestr.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Playtestr.Api.Endpoints;

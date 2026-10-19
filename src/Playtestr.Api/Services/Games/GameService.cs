@@ -4,7 +4,7 @@ using Playtestr.Api.Dtos;
 using Playtestr.Api.Mappings;
 using Playtestr.Api.Models;
 
-namespace Playtestr.Api.Services;
+namespace Playtestr.Api.Services.Games;
 
 public class GameService(AppDbContext context) : IGameService
 {

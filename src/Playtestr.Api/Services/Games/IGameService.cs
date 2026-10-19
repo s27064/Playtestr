@@ -1,6 +1,6 @@
 using Playtestr.Api.Dtos;
 
-namespace Playtestr.Api.Services;
+namespace Playtestr.Api.Services.Games;
 
 public interface IGameService
 {
