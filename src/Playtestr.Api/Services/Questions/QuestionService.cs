@@ -39,7 +39,6 @@ public class QuestionService(AppDbContext context) : IQuestionService
     public async Task<IReadOnlyList<QuestionResponse>?> GetByPlaytestIdAsync(int playtestId)
     {
         if (!await context.Playtests.AnyAsync(p => p.Id == playtestId)) return null;
-
         return await context.Questions
             .Where(q => q.PlaytestId == playtestId)
             .Select(q => q.ToResponse())
@@ -72,6 +71,3 @@ public class QuestionService(AppDbContext context) : IQuestionService
         return new(UpdateQuestionStatus.Updated, question.ToResponse());
     }
 }
-
-public enum UpdateQuestionStatus { Updated, NotFound, HasAnswers }
-public record UpdateQuestionResult(UpdateQuestionStatus Status, QuestionResponse? Question = null);

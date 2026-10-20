@@ -7,7 +7,7 @@ public class Answer
     public string? Text { get; set; }
     
     public int ResponseId {get; set;}
-    public Response Response {get; set;} = null!;
+    public Submission Response {get; set;} = null!;
 
     public int QuestionId {get; set;}
     public Question Question {get; set;} = null!;

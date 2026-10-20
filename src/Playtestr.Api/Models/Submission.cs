@@ -1,6 +1,6 @@
 namespace Playtestr.Api.Models;
 
-public class Response
+public class Submission
 {
     public int Id {get; set;}
     public DateTime SubmittedAt {get; set;} = DateTime.UtcNow;
