@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Playtestr.Api.Endpoints;
 using Playtestr.Api.Services.Playtests;
 using System.Text.Json.Serialization;
+using Playtestr.Api.Services.Questions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<IPlaytestService, PlaytestService>();
+builder.Services.AddScoped<IQuestionService, QuestionService>();
 builder.Services.AddValidation();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -36,5 +38,6 @@ app.UseHttpsRedirection();
 //Endpoints
 app.MapGameEndpoints();
 app.MapPlaytestEndpoints();
+app.MapQuestionEndpoints();
 
 app.Run();
