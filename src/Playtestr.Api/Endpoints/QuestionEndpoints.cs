@@ -39,10 +39,10 @@ public static class QuestionEndpoints
             };
         }).WithTags("Questions");
 
-        app.MapDelete("/questions/{id}", (int id, IQuestionService service) =>
+        app.MapDelete("/questions/{id}", async (int id, IQuestionService service) =>
         {
-           var question = service.DeleteAsync(id);
-           return question is null ? Results.NotFound() : Results.NoContent(); 
+            var success = await service.DeleteAsync(id);
+            return success ? Results.NoContent() : Results.NotFound();
         }).WithTags("Questions");
     }
 }
