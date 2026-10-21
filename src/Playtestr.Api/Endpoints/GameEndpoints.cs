@@ -14,7 +14,9 @@ public static class GameEndpoints
         group.MapGet("/{id}", async (int id, IGameService service) =>
         {
             var game = await service.GetByIdAsync(id);
-            return game is null ? Results.Problem("Game not found", statusCode: StatusCodes.Status404NotFound) : Results.Ok(game);
+            return game is null ?
+                Results.Problem("Game not found", statusCode: StatusCodes.Status404NotFound) :
+                Results.Ok(game);
         });
 
         group.MapPost("/", async (CreateGameRequest request, IGameService service) =>
@@ -26,13 +28,17 @@ public static class GameEndpoints
         group.MapPut("/{id}", async (int id, CreateGameRequest request, IGameService service) =>
         {
             var game = await service.UpdateAsync(id, request);
-            return game is null ? Results.Problem("Game not found", statusCode: StatusCodes.Status404NotFound) : Results.Ok(game);
+            return game is null ?
+                Results.Problem("Game not found", statusCode: StatusCodes.Status404NotFound) :
+                Results.Ok(game);
         });
 
         group.MapDelete("/{id}", async (int id, IGameService service) =>
         {
             var success = await service.DeleteAsync(id);
-            return success ? Results.NoContent() : Results.Problem("Game not found", statusCode: StatusCodes.Status404NotFound);
+            return success ?
+                Results.NoContent() :
+                Results.Problem("Game not found", statusCode: StatusCodes.Status404NotFound);
         });
     }
 }

@@ -10,13 +10,17 @@ public static class SubmissionEndpoints
         app.MapGet("/submissions/{id}", async (int id, ISubmissionService service) =>
         {
             var submission = await service.GetByIdAsync(id);
-            return submission is null ? Results.Problem("Submission not found", statusCode: StatusCodes.Status404NotFound) : Results.Ok(submission);
+            return submission is null ?
+                Results.Problem("Submission not found", statusCode: StatusCodes.Status404NotFound) :
+                Results.Ok(submission);
         }).WithTags("Submissions");
 
         app.MapGet("/playtests/{playtestId}/submissions", async (int playtestId, ISubmissionService service) =>
         {
             var submissions = await service.GetByPlaytestIdAsync(playtestId);
-            return submissions is null ? Results.Problem("Playtest not found", statusCode: StatusCodes.Status404NotFound) : Results.Ok(submissions);
+            return submissions is null ?
+                Results.Problem("Playtest not found", statusCode: StatusCodes.Status404NotFound) :
+                Results.Ok(submissions);
         }).WithTags("Submissions");
 
         app.MapPost("/playtests/{playtestId}/submissions", async (int playtestId, CreateSubmissionRequest request, ISubmissionService service) =>
@@ -33,7 +37,9 @@ public static class SubmissionEndpoints
         app.MapDelete("/submissions/{id}", async (int id, ISubmissionService service) =>
         {
             var success = await service.DeleteAsync(id);
-            return success ? Results.NoContent() : Results.Problem("Submission not found", statusCode: StatusCodes.Status404NotFound);
+            return success ?
+                Results.NoContent() :
+                Results.Problem("Submission not found", statusCode: StatusCodes.Status404NotFound);
         }).WithTags("Submissions");
     }
 }
