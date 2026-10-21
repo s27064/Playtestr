@@ -9,6 +9,7 @@ using System.Text.Json.Serialization;
 using Playtestr.Api.Services.Questions;
 using Playtestr.Api.Services.Submissions;
 using Playtestr.Api.Services.PlaytestSummaries;
+using Playtestr.Api.Services.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,7 @@ builder.Services.AddScoped<IPlaytestService, PlaytestService>();
 builder.Services.AddScoped<IQuestionService, QuestionService>();
 builder.Services.AddScoped<ISubmissionService, SubmissionService>();
 builder.Services.AddScoped<IPlaytestSummaryService, PlaytestSummaryService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddValidation();
 builder.Services.AddProblemDetails();
 
@@ -49,5 +51,6 @@ app.MapPlaytestEndpoints();
 app.MapQuestionEndpoints();
 app.MapSubmissionEndpoints();
 app.MapPlaytestSummaryEndpoints();
+app.MapAuthEndpoints();
 
 app.Run();
