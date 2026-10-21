@@ -19,17 +19,20 @@ public class SubmissionService(AppDbContext context) : ISubmissionService
 
     public async Task<SubmissionResponse?> GetByIdAsync(int id)
     {
-        var submission = await context.Submissions.FindAsync(id);
+        var submission = await context.Submissions
+            .Include(s => s.Answers)
+            .FirstOrDefaultAsync(s => s.Id == id);
         return submission is null ? null : submission.ToResponse();
     }
 
     public async Task<IReadOnlyList<SubmissionResponse>?> GetByPlaytestIdAsync(int playtestId)
     {
         if (!await context.Playtests.AnyAsync(p => p.Id == playtestId)) return null;
-        return await context.Submissions
+        var submissions = await context.Submissions
             .Where(s => s.PlaytestId == playtestId)
-            .Select(s => s.ToResponse())
+            .Include(s => s.Answers)
             .ToListAsync();
+        return submissions.Select(s => s.ToResponse()).ToList();
     }
 
     // 1. check that playtest exists
