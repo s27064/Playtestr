@@ -13,19 +13,19 @@ public static class QuestionEndpoints
         app.MapGet("/questions/{id}", async (int id, IQuestionService service) =>
         {
             var question = await service.GetByIdAsync(id);
-            return question is null ? Results.NotFound() : Results.Ok(question);
+            return question is null ? Results.Problem("Question not found", statusCode: StatusCodes.Status404NotFound) : Results.Ok(question);
         }).WithTags("Questions");
 
         app.MapGet("/playtests/{playtestId}/questions", async (int playtestId, IQuestionService service) =>
         {
             var questions = await service.GetByPlaytestIdAsync(playtestId);
-            return questions is null ? Results.NotFound("Playtest not found") : Results.Ok(questions);
+            return questions is null ? Results.Problem("Playtest not found", statusCode: StatusCodes.Status404NotFound) : Results.Ok(questions);
         }).WithTags("Questions");
 
         app.MapPost("/playtests/{playtestId}/questions", async (int playtestId, CreateQuestionRequest request, IQuestionService service) =>
         {
             var question = await service.AddAsync(playtestId, request);
-            return question is null ? Results.NotFound() : Results.Created($"/questions/{question.Id}", question);
+            return question is null ? Results.Problem("Playtest not found", statusCode: StatusCodes.Status404NotFound) : Results.Created($"/questions/{question.Id}", question);
         }).WithTags("Questions");
 
         app.MapPut("/questions/{id}", async (int id, CreateQuestionRequest request, IQuestionService service) =>
@@ -33,8 +33,8 @@ public static class QuestionEndpoints
             var result = await service.UpdateAsync(id, request);
             return result.Status switch
             {
-                UpdateQuestionStatus.NotFound => Results.NotFound(),
-                UpdateQuestionStatus.HasAnswers => Results.Conflict("Cannot change the type of a question that has answers"),
+                UpdateQuestionStatus.NotFound => Results.Problem("Question not found", statusCode: StatusCodes.Status404NotFound),
+                UpdateQuestionStatus.HasAnswers => Results.Problem("Cannot change the type of a question that has answers", statusCode: StatusCodes.Status409Conflict),
                 _ => Results.Ok(result.Question)
             };
         }).WithTags("Questions");
@@ -42,7 +42,7 @@ public static class QuestionEndpoints
         app.MapDelete("/questions/{id}", async (int id, IQuestionService service) =>
         {
             var success = await service.DeleteAsync(id);
-            return success ? Results.NoContent() : Results.NotFound();
+            return success ? Results.NoContent() : Results.Problem("Question not found", statusCode: StatusCodes.Status404NotFound);
         }).WithTags("Questions");
     }
 }

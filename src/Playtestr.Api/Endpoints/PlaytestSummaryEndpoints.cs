@@ -9,7 +9,7 @@ public static class PlaytestSummaryEndpoints
         app.MapGet("/playtests/{playtestId}/results", async (int playtestId, IPlaytestSummaryService service) =>
         {
             var summary = await service.GetPlaytestSummaryAsync(playtestId);
-            return summary is null ? Results.NotFound("Playtest not found") : Results.Ok(summary);
+            return summary is null ? Results.Problem("Playtest not found", statusCode: StatusCodes.Status404NotFound) : Results.Ok(summary);
         }).WithTags("Results");
     }
 }
