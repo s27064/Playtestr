@@ -2,7 +2,7 @@ using Playtestr.Api.Models;
 
 namespace Playtestr.Api.Dtos;
 
-public record PlaytestSummaryResponse 
+public record PlaytestSummaryResponse
 (
     int PlaytestId,
     string Title,
@@ -10,7 +10,7 @@ public record PlaytestSummaryResponse
     List<QuestionSummary> QuestionSummaries
 );
 
-public record QuestionSummary 
+public record QuestionSummary
 (
     int QuestionId,
     string Text,

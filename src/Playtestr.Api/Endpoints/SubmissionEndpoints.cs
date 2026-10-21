@@ -33,7 +33,7 @@ public static class SubmissionEndpoints
         app.MapDelete("/submissions/{id}", async (int id, ISubmissionService service) =>
         {
             var success = await service.DeleteAsync(id);
-            return !success ? Results.NotFound() : Results.NoContent(); 
+            return !success ? Results.NotFound() : Results.NoContent();
         }).WithTags("Submissions");
     }
 }

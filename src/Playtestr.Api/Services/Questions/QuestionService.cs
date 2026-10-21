@@ -11,7 +11,7 @@ public class QuestionService(AppDbContext context) : IQuestionService
     public async Task<QuestionResponse?> AddAsync(int playtestId, CreateQuestionRequest request)
     {
         if (!await context.Playtests.AnyAsync(p => p.Id == playtestId)) return null;
-        
+
         var question = new Question
         {
             Text = request.Text,

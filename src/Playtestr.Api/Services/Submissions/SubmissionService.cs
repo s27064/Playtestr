@@ -69,7 +69,7 @@ public class SubmissionService(AppDbContext context) : ISubmissionService
             PlaytestId = playtestId,
             TesterName = request.TesterName,
             Answers = request.Answers
-                .Select(a => new Answer {QuestionId = a.QuestionId, Rating = a.Rating, Text = a.Text})
+                .Select(a => new Answer { QuestionId = a.QuestionId, Rating = a.Rating, Text = a.Text })
                 .ToList()
         };
 

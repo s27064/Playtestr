@@ -7,7 +7,7 @@ public static class PlaytestEndpoints
 {
     public static void MapPlaytestEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/playtests", async (IPlaytestService service) => 
+        app.MapGet("/playtests", async (IPlaytestService service) =>
         {
             return await service.GetAllAsync();
         }).WithTags("Playtests");
@@ -38,8 +38,8 @@ public static class PlaytestEndpoints
 
         app.MapDelete("/playtests/{id}", async (int id, IPlaytestService service) =>
         {
-           var success = await service.DeleteAsync(id);
-           return success ? Results.NoContent() : Results.NotFound();
+            var success = await service.DeleteAsync(id);
+            return success ? Results.NoContent() : Results.NotFound();
         }).WithTags("Playtests");
     }
 }

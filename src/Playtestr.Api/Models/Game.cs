@@ -8,5 +8,5 @@ public class Game
     public int ReleaseYear { get; set; }
 
     //Playtests
-    public List<Playtest> Playtests {get; set;} = [];
+    public List<Playtest> Playtests { get; set; } = [];
 }
