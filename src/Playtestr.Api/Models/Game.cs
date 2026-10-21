@@ -7,6 +7,5 @@ public class Game
     public string Description { get; set; } = "";
     public int ReleaseYear { get; set; }
 
-    //Playtests
     public List<Playtest> Playtests { get; set; } = [];
 }
