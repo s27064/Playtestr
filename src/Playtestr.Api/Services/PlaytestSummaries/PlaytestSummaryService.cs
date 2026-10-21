@@ -17,22 +17,22 @@ public class PlaytestSummaryService(AppDbContext context) : IPlaytestSummaryServ
             .ToListAsync();
 
         var questionSummaries = new List<QuestionSummary>();
-        foreach (var q in questions)
+        foreach (var question in questions)
         {
-            var averageRating = q.Answers.Average(a => a.Rating) 
+            var averageRating = question.Answers.Average(a => a.Rating)
                 is double avg ? Math.Round(avg, 2) : (double?)null;
-            List<string> textAnswers = q.Answers
+            List<string> textAnswers = question.Answers
             .Where(a => !string.IsNullOrWhiteSpace(a.Text))
             .Select(a => a.Text!)
             .ToList();
 
             var questionSummary = new QuestionSummary
             (
-                q.Id,
-                q.Text,
-                q.Type,
+                question.Id,
+                question.Text,
+                question.Type,
                 averageRating,
-                q.Answers.Count,
+                question.Answers.Count,
                 textAnswers
             );
             questionSummaries.Add(questionSummary);

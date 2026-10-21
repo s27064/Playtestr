@@ -51,17 +51,17 @@ public class SubmissionService(AppDbContext context) : ISubmissionService
         if (request.Answers.DistinctBy(a => a.QuestionId).Count() != request.Answers.Count)
             return new(SubmitStatus.InvalidAnswers, Error: "Each question can only be answered once");
 
-        foreach (var a in request.Answers)
+        foreach (var answer in request.Answers)
         {
-            if (!questions.TryGetValue(a.QuestionId, out var q))
-                return new(SubmitStatus.InvalidAnswers, Error: $"Question {a.QuestionId} is not part of this playtest");
+            if (!questions.TryGetValue(answer.QuestionId, out var question))
+                return new(SubmitStatus.InvalidAnswers, Error: $"Question {answer.QuestionId} is not part of this playtest");
 
-            var valid = q.Type == QuestionType.Rating
-                ? a.Rating is not null && a.Text is null
-                : !string.IsNullOrWhiteSpace(a.Text) && a.Rating is null;
+            var valid = question.Type == QuestionType.Rating
+                ? answer.Rating is not null && answer.Text is null
+                : !string.IsNullOrWhiteSpace(answer.Text) && answer.Rating is null;
 
             if (!valid)
-                return new(SubmitStatus.InvalidAnswers, Error: $"Invalid answer for question {q.Id}.");
+                return new(SubmitStatus.InvalidAnswers, Error: $"Invalid answer for question {question.Id}.");
         }
 
         var submission = new Submission
