@@ -6,8 +6,8 @@ public class Answer
     public int? Rating { get; set; }
     public string? Text { get; set; }
     
-    public int ResponseId {get; set;}
-    public Submission Response {get; set;} = null!;
+    public int SubmissionId {get; set;}
+    public Submission Submission {get; set;} = null!;
 
     public int QuestionId {get; set;}
     public Question Question {get; set;} = null!;
