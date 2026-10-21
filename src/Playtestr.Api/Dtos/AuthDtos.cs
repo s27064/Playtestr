@@ -10,3 +10,7 @@ public record RegisterRequest
 );
 
 public record UserResponse(int Id, string Email, string Username);
+
+public enum RegisterStatus { Created, EmailTaken, UsernameTaken }
+
+public record RegisterResult(RegisterStatus Status, UserResponse? User = null);
