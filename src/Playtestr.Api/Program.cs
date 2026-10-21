@@ -8,7 +8,7 @@ using Playtestr.Api.Services.Playtests;
 using System.Text.Json.Serialization;
 using Playtestr.Api.Services.Questions;
 using Playtestr.Api.Services.Submissions;
-using Playtestr.Api.Services.Results;
+using Playtestr.Api.Services.PlaytestSummaries;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +19,7 @@ builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<IPlaytestService, PlaytestService>();
 builder.Services.AddScoped<IQuestionService, QuestionService>();
 builder.Services.AddScoped<ISubmissionService, SubmissionService>();
-builder.Services.AddScoped<IResultService, ResultService>();
+builder.Services.AddScoped<IPlaytestSummaryService, PlaytestSummaryService>();
 builder.Services.AddValidation();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -44,6 +44,6 @@ app.MapGameEndpoints();
 app.MapPlaytestEndpoints();
 app.MapQuestionEndpoints();
 app.MapSubmissionEndpoints();
-app.MapResultEndpoints();
+app.MapPlaytestSummaryEndpoints();
 
 app.Run();

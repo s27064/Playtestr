@@ -2,15 +2,15 @@ using Playtestr.Api.Models;
 
 namespace Playtestr.Api.Dtos;
 
-public record PlaytestResultsResponse 
+public record PlaytestSummaryResponse 
 (
     int PlaytestId,
     string Title,
     int SubmissionCount,
-    List<QuestionResult> QuestionResults
+    List<QuestionSummary> QuestionSummaries
 );
 
-public record QuestionResult 
+public record QuestionSummary 
 (
     int QuestionId,
     string Text,

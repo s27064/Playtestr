@@ -2,11 +2,11 @@ using Microsoft.EntityFrameworkCore;
 using Playtestr.Api.Data;
 using Playtestr.Api.Dtos;
 
-namespace Playtestr.Api.Services.Results;
+namespace Playtestr.Api.Services.PlaytestSummaries;
 
-public class ResultService(AppDbContext context) : IResultService
+public class PlaytestSummaryService(AppDbContext context) : IPlaytestSummaryService
 {
-    public async Task<PlaytestResultsResponse?> GetPlaytestResultsAsync(int playtestId)
+    public async Task<PlaytestSummaryResponse?> GetPlaytestSummaryAsync(int playtestId)
     {
         var playtest = await context.Playtests.FindAsync(playtestId);
         if (playtest is null) return null;
@@ -16,7 +16,7 @@ public class ResultService(AppDbContext context) : IResultService
             .Include(q => q.Answers)
             .ToListAsync();
 
-        var questionResults = new List<QuestionResult>();
+        var questionSummaries = new List<QuestionSummary>();
         foreach (var q in questions)
         {
             var averageRating = q.Answers.Average(a => a.Rating) 
@@ -26,7 +26,7 @@ public class ResultService(AppDbContext context) : IResultService
             .Select(a => a.Text!)
             .ToList();
 
-            var result = new QuestionResult
+            var questionSummary = new QuestionSummary
             (
                 q.Id,
                 q.Text,
@@ -35,18 +35,18 @@ public class ResultService(AppDbContext context) : IResultService
                 q.Answers.Count,
                 textAnswers
             );
-            questionResults.Add(result);
+            questionSummaries.Add(questionSummary);
         }
 
         var submissionCount = await context.Submissions.CountAsync(s => s.PlaytestId == playtestId);
-        var playtestResult = new PlaytestResultsResponse
+        var playtestSummary = new PlaytestSummaryResponse
         (
             playtestId,
             playtest.Title,
             submissionCount,
-            questionResults
+            questionSummaries
         );
 
-        return playtestResult;
+        return playtestSummary;
     }
 }
