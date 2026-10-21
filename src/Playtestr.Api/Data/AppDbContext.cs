@@ -10,4 +10,5 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Question> Questions => Set<Question>();
     public DbSet<Submission> Submissions => Set<Submission>();
     public DbSet<Answer> Answers => Set<Answer>();
+    public DbSet<User> Users => Set<User>();
 }
