@@ -139,6 +139,32 @@ namespace Playtestr.Api.Migrations
                     b.ToTable("Submissions");
                 });
 
+            modelBuilder.Entity("Playtestr.Api.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("Users");
+                });
+
             modelBuilder.Entity("Playtestr.Api.Models.Answer", b =>
                 {
                     b.HasOne("Playtestr.Api.Models.Question", "Question")
