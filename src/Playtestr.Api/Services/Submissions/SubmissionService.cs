@@ -1,4 +1,3 @@
-using System;
 using Microsoft.EntityFrameworkCore;
 using Playtestr.Api.Data;
 using Playtestr.Api.Dtos;
@@ -33,6 +32,10 @@ public class SubmissionService(AppDbContext context) : ISubmissionService
             .ToListAsync();
     }
 
+    // 1. check that playtest exists
+    // 2. load the playtest's questions
+    // 3. for each answer check that its QuestionId is one of those questions. A rating questions has a Rating, a Text has text
+    // 4. if anything fails return InvalidAnswers with a message
     public async Task<SubmitResult> SubmitAsync(int playtestId, CreateSubmissionRequest request)
     {
         if (!await context.Playtests.AnyAsync(p => p.Id == playtestId))
@@ -63,7 +66,7 @@ public class SubmissionService(AppDbContext context) : ISubmissionService
             PlaytestId = playtestId,
             TesterName = request.TesterName,
             Answers = request.Answers
-                .Select(a => new Answer { QuestionId = a.QuestionId, Rating = a.Rating, Text = a.Text })
+                .Select(a => new Answer {QuestionId = a.QuestionId, Rating = a.Rating, Text = a.Text})
                 .ToList()
         };
 

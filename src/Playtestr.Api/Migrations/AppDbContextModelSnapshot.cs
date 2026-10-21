@@ -117,7 +117,7 @@ namespace Playtestr.Api.Migrations
                     b.ToTable("Questions");
                 });
 
-            modelBuilder.Entity("Playtestr.Api.Models.Response", b =>
+            modelBuilder.Entity("Playtestr.Api.Models.Submission", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -136,7 +136,7 @@ namespace Playtestr.Api.Migrations
 
                     b.HasIndex("PlaytestId");
 
-                    b.ToTable("Responses");
+                    b.ToTable("Submissions");
                 });
 
             modelBuilder.Entity("Playtestr.Api.Models.Answer", b =>
@@ -147,7 +147,7 @@ namespace Playtestr.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Playtestr.Api.Models.Response", "Response")
+                    b.HasOne("Playtestr.Api.Models.Submission", "Response")
                         .WithMany("Answers")
                         .HasForeignKey("ResponseId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -180,7 +180,7 @@ namespace Playtestr.Api.Migrations
                     b.Navigation("Playtest");
                 });
 
-            modelBuilder.Entity("Playtestr.Api.Models.Response", b =>
+            modelBuilder.Entity("Playtestr.Api.Models.Submission", b =>
                 {
                     b.HasOne("Playtestr.Api.Models.Playtest", "Playtest")
                         .WithMany("Responses")
@@ -203,7 +203,7 @@ namespace Playtestr.Api.Migrations
                     b.Navigation("Responses");
                 });
 
-            modelBuilder.Entity("Playtestr.Api.Models.Response", b =>
+            modelBuilder.Entity("Playtestr.Api.Models.Submission", b =>
                 {
                     b.Navigation("Answers");
                 });
