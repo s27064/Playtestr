@@ -7,25 +7,26 @@ public static class QuestionEndpoints
 {
     public static void MapQuestionEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/questions", async (IQuestionService service) => await service.GetAllAsync());
+        app.MapGet("/questions", async (IQuestionService service) => await service.GetAllAsync())
+            .WithTags("Questions");
 
         app.MapGet("/questions/{id}", async (int id, IQuestionService service) =>
         {
             var question = await service.GetByIdAsync(id);
             return question is null ? Results.NotFound() : Results.Ok(question);
-        });
+        }).WithTags("Questions");
 
         app.MapGet("/playtests/{playtestId}/questions", async (int playtestId, IQuestionService service) =>
         {
             var questions = await service.GetByPlaytestIdAsync(playtestId);
             return questions is null ? Results.NotFound("Playtest not found") : Results.Ok(questions);
-        });
+        }).WithTags("Questions");
 
         app.MapPost("/playtests/{playtestId}/questions", async (int playtestId, CreateQuestionRequest request, IQuestionService service) =>
         {
             var question = await service.AddAsync(playtestId, request);
             return question is null ? Results.NotFound() : Results.Created($"/questions/{question.Id}", question);
-        });
+        }).WithTags("Questions");
 
         app.MapPut("/questions/{id}", async (int id, CreateQuestionRequest request, IQuestionService service) =>
         {
@@ -36,12 +37,12 @@ public static class QuestionEndpoints
                 UpdateQuestionStatus.HasAnswers => Results.Conflict("Cannot change the type of a question that has answers"),
                 _ => Results.Ok(result.Question)
             };
-        });
+        }).WithTags("Questions");
 
         app.MapDelete("/questions/{id}", (int id, IQuestionService service) =>
         {
            var question = service.DeleteAsync(id);
            return question is null ? Results.NotFound() : Results.NoContent(); 
-        });
+        }).WithTags("Questions");
     }
 }

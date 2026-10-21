@@ -11,13 +11,13 @@ public static class SubmissionEndpoints
         {
             var submission = await service.GetByIdAsync(id);
             return submission is null ? Results.NotFound() : Results.Ok(submission);
-        });
+        }).WithTags("Submissions");
 
         app.MapGet("/playtests/{playtestId}/submissions", async (int playtestId, ISubmissionService service) =>
         {
             var submissions = await service.GetByPlaytestIdAsync(playtestId);
             return submissions is null ? Results.NotFound() : Results.Ok(submissions);
-        });
+        }).WithTags("Submissions");
 
         app.MapPost("/playtests/{playtestId}/submissions", async (int playtestId, CreateSubmissionRequest request, ISubmissionService service) =>
         {
@@ -28,12 +28,12 @@ public static class SubmissionEndpoints
                 SubmitStatus.InvalidAnswers => Results.BadRequest(result.Error),
                 _ => Results.Created($"/submissions/{result.Submission!.Id}", result.Submission)
             };
-        });
+        }).WithTags("Submissions");
 
         app.MapDelete("/submissions/{id}", async (int id, ISubmissionService service) =>
         {
             var success = await service.DeleteAsync(id);
             return !success ? Results.NotFound() : Results.NoContent(); 
-        });
+        }).WithTags("Submissions");
     }
 }
