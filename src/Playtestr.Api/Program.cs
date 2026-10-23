@@ -22,6 +22,7 @@ builder.Services.AddScoped<IQuestionService, QuestionService>();
 builder.Services.AddScoped<ISubmissionService, SubmissionService>();
 builder.Services.AddScoped<IPlaytestSummaryService, PlaytestSummaryService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddSingleton<ITokenService, TokenService>();
 builder.Services.AddValidation();
 builder.Services.AddProblemDetails();
 
