@@ -10,6 +10,8 @@ using Playtestr.Api.Services.Questions;
 using Playtestr.Api.Services.Submissions;
 using Playtestr.Api.Services.PlaytestSummaries;
 using Playtestr.Api.Services.Auth;
+using Microsoft.AspNetCore.Identity;
+using Playtestr.Api.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +24,7 @@ builder.Services.AddScoped<IQuestionService, QuestionService>();
 builder.Services.AddScoped<ISubmissionService, SubmissionService>();
 builder.Services.AddScoped<IPlaytestSummaryService, PlaytestSummaryService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddSingleton<ITokenService, TokenService>();
 builder.Services.AddValidation();
 builder.Services.AddProblemDetails();
