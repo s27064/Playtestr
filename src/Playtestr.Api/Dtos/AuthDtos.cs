@@ -2,11 +2,19 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Playtestr.Api.Dtos;
 
+public record LoginRequest
+(
+    [Required] string Login, // Can be either an Email or Username
+    [Required, MinLength(10), MaxLength(100)] string Password
+);
+
+public record LoginResponse(string Token, UserResponse User);
+
 public record RegisterRequest
 (
     [Required, EmailAddress, MaxLength(255)] string Email,
     [Required, MinLength(10), MaxLength(100)] string Password,
-    [Required, MaxLength(50)] string Username
+    [Required, MaxLength(50), RegularExpression(@"^[a-zA-Z0-9_.-]+$")] string Username
 );
 
 public record UserResponse(int Id, string Email, string Username);

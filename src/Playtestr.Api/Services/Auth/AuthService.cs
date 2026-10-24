@@ -6,8 +6,23 @@ using Playtestr.Api.Models;
 
 namespace Playtestr.Api.Services.Auth;
 
-public class AuthService(AppDbContext context, IPasswordHasher<User> hasher) : IAuthService
+public class AuthService(AppDbContext context, IPasswordHasher<User> hasher, ITokenService tokens) : IAuthService
 {
+    public async Task<LoginResponse?> LoginAsync(LoginRequest request)
+    {
+        var login = request.Login.Trim();
+        var user = login.Contains('@')
+            ? await context.Users.FirstOrDefaultAsync(u => u.Email == login.ToLowerInvariant())
+            : await context.Users.FirstOrDefaultAsync(u => u.Username.ToLower() == login.ToLower());
+        if (user is null) return null;
+
+        var result = hasher.VerifyHashedPassword(user, user.PasswordHash, request.Password);
+        if (result == PasswordVerificationResult.Failed) return null;
+
+        var token = tokens.CreateToken(user);
+        return new LoginResponse(token, new UserResponse(user.Id, user.Email, user.Username));
+    }
+
     public async Task<RegisterResult> RegisterAsync(RegisterRequest request)
     {
         var email = request.Email.Trim().ToLowerInvariant();
