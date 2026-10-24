@@ -1,4 +1,6 @@
 using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using Playtestr.Api.Dtos;
 using Playtestr.Api.Models;
 using Playtestr.Api.Services.Auth;
@@ -29,5 +31,13 @@ public static class AuthEndpoints
                 Results.Problem("Invalid login or password", statusCode: StatusCodes.Status401Unauthorized) :
                 Results.Ok(result);
         });
+
+        auth.MapGet("/me", (ClaimsPrincipal user) => new
+        {
+            Id = user.FindFirstValue(JwtRegisteredClaimNames.Sub),
+            Email = user.FindFirstValue(JwtRegisteredClaimNames.Email),
+            Username = user.FindFirstValue("username")
+        })
+        .RequireAuthorization();
     }
 }
