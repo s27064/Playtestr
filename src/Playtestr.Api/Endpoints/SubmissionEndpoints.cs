@@ -15,7 +15,8 @@ public static class SubmissionEndpoints
             return submission is null ?
                 Results.Problem("Submission not found", statusCode: StatusCodes.Status404NotFound) :
                 Results.Ok(submission);
-        }).WithTags("Submissions");
+        })
+        .WithTags("Submissions");
 
         app.MapGet("/playtests/{playtestId}/submissions", async (int playtestId, ISubmissionService service) =>
         {
@@ -23,7 +24,8 @@ public static class SubmissionEndpoints
             return submissions is null ?
                 Results.Problem("Playtest not found", statusCode: StatusCodes.Status404NotFound) :
                 Results.Ok(submissions);
-        }).WithTags("Submissions");
+        })
+        .WithTags("Submissions");
 
         app.MapPost("/playtests/{playtestId}/submissions", async (int playtestId, CreateSubmissionRequest request, ClaimsPrincipal user, ISubmissionService service) =>
         {
@@ -45,6 +47,7 @@ public static class SubmissionEndpoints
             return success ?
                 Results.NoContent() :
                 Results.Problem("Submission not found", statusCode: StatusCodes.Status404NotFound);
-        }).WithTags("Submissions");
+        })
+        .WithTags("Submissions");
     }
 }

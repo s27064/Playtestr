@@ -12,6 +12,7 @@ public static class PlaytestSummaryEndpoints
             return summary is null ?
                 Results.Problem("Playtest not found", statusCode: StatusCodes.Status404NotFound) :
                 Results.Ok(summary);
-        }).WithTags("Results");
+        })
+        .WithTags("Results");
     }
 }

@@ -32,7 +32,7 @@ public class PlaytestService(AppDbContext context) : IPlaytestService
         var playtest = await context.Playtests
         .Include(p => p.Game)
         .FirstOrDefaultAsync(p => p.Id == id);
-        
+
         if (playtest is null) return OperationStatus.NotFound;
         if (playtest.Game.OwnerId != userId) return OperationStatus.Forbidden;
 
@@ -67,7 +67,7 @@ public class PlaytestService(AppDbContext context) : IPlaytestService
         var playtest = await context.Playtests
         .Include(p => p.Game)
         .FirstOrDefaultAsync(p => p.Id == id);
-        
+
         if (playtest is null) return new(OperationStatus.NotFound);
         if (playtest.Game.OwnerId != userId) return new(OperationStatus.Forbidden);
 

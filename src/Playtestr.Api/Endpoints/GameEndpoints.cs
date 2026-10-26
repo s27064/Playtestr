@@ -37,7 +37,8 @@ public static class GameEndpoints
                 OperationStatus.Forbidden => Results.Problem("You are not the owner of this game", statusCode: StatusCodes.Status403Forbidden),
                 _ => Results.Ok(result.Value)
             };
-        }).RequireAuthorization();
+        })
+        .RequireAuthorization();
 
         group.MapDelete("/{id}", async (int id, IGameService service, ClaimsPrincipal user) =>
         {
@@ -48,6 +49,7 @@ public static class GameEndpoints
                 OperationStatus.Forbidden => Results.Problem("You are not the owner of this game", statusCode: StatusCodes.Status403Forbidden),
                 _ => Results.NoContent()
             };
-        }).RequireAuthorization();
+        })
+        .RequireAuthorization();
     }
 }

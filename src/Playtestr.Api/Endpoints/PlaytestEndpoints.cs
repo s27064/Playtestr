@@ -14,7 +14,8 @@ public static class PlaytestEndpoints
         app.MapGet("/playtests", async (IPlaytestService service) =>
         {
             return await service.GetAllAsync();
-        }).WithTags("Playtests");
+        })
+        .WithTags("Playtests");
 
         app.MapGet("/playtests/{id}", async (int id, IPlaytestService service) =>
         {
@@ -22,7 +23,8 @@ public static class PlaytestEndpoints
             return playtest is null ?
                 Results.Problem("Playtest not found", statusCode: StatusCodes.Status404NotFound) :
                 Results.Ok(playtest);
-        }).WithTags("Playtests");
+        })
+        .WithTags("Playtests");
 
         app.MapGet("/games/{gameId}/playtests", async (int gameId, IPlaytestService service) =>
         {
@@ -30,7 +32,8 @@ public static class PlaytestEndpoints
             return playtests is null ?
                 Results.Problem("Game not found", statusCode: StatusCodes.Status404NotFound) :
                 Results.Ok(playtests);
-        }).WithTags("Playtests");
+        })
+        .WithTags("Playtests");
 
         app.MapPost("/games/{gameId}/playtests", async (int gameId, CreatePlaytestRequest request, IPlaytestService service, ClaimsPrincipal user) =>
         {
@@ -61,7 +64,7 @@ public static class PlaytestEndpoints
         app.MapDelete("/playtests/{id}", async (int id, IPlaytestService service, ClaimsPrincipal user) =>
         {
             var status = await service.DeleteAsync(id, user.GetUserId());
-            return status switch 
+            return status switch
             {
                 OperationStatus.NotFound => Results.Problem("Game not found", statusCode: StatusCodes.Status404NotFound),
                 OperationStatus.Forbidden => Results.Problem("You must be an owner of this game to delete its playtests", statusCode: StatusCodes.Status403Forbidden),

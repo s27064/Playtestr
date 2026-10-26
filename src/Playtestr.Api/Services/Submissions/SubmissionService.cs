@@ -42,8 +42,8 @@ public class SubmissionService(AppDbContext context) : ISubmissionService
         if (!await context.Playtests.AnyAsync(p => p.Id == playtestId))
             return new(SubmitStatus.PlaytestNotFound, Error: "Playtest not found");
 
-         var alreadySubmitted = await context.Submissions
-            .AnyAsync(s => s.PlaytestId == playtestId && s.UserId == userId);
+        var alreadySubmitted = await context.Submissions
+           .AnyAsync(s => s.PlaytestId == playtestId && s.UserId == userId);
         if (alreadySubmitted)
             return new(SubmitStatus.AlreadySubmitted, Error: "You have already submitted answers for this playtest.");
 

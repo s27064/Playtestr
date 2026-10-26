@@ -16,7 +16,7 @@ public static class QuestionEndpoints
             return question is null ?
                 Results.Problem("Question not found", statusCode: StatusCodes.Status404NotFound) :
                 Results.Ok(question);
-        }).WithTags("Questions");
+        });
 
         app.MapGet("/playtests/{playtestId}/questions", async (int playtestId, IQuestionService service) =>
         {
@@ -24,7 +24,7 @@ public static class QuestionEndpoints
             return questions is null ?
                 Results.Problem("Playtest not found", statusCode: StatusCodes.Status404NotFound) :
                 Results.Ok(questions);
-        }).WithTags("Questions");
+        });
 
         app.MapPost("/playtests/{playtestId}/questions", async (int playtestId, CreateQuestionRequest request, IQuestionService service) =>
         {
@@ -32,7 +32,7 @@ public static class QuestionEndpoints
             return question is null ?
                 Results.Problem("Playtest not found", statusCode: StatusCodes.Status404NotFound) :
                 Results.Created($"/questions/{question.Id}", question);
-        }).WithTags("Questions");
+        });
 
         app.MapPut("/questions/{id}", async (int id, CreateQuestionRequest request, IQuestionService service) =>
         {
@@ -43,7 +43,7 @@ public static class QuestionEndpoints
                 UpdateQuestionStatus.HasAnswers => Results.Problem("Cannot change the type of a question that has answers", statusCode: StatusCodes.Status409Conflict),
                 _ => Results.Ok(result.Question)
             };
-        }).WithTags("Questions");
+        });
 
         app.MapDelete("/questions/{id}", async (int id, IQuestionService service) =>
         {
@@ -51,6 +51,6 @@ public static class QuestionEndpoints
             return success ?
                 Results.NoContent() :
                 Results.Problem("Question not found", statusCode: StatusCodes.Status404NotFound);
-        }).WithTags("Questions");
+        });
     }
 }

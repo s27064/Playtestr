@@ -27,7 +27,7 @@ public static class AuthEndpoints
         auth.MapPost("/login", async (LoginRequest request, IAuthService service) =>
         {
             var result = await service.LoginAsync(request);
-            return result is null ? 
+            return result is null ?
                 Results.Problem("Invalid login or password", statusCode: StatusCodes.Status401Unauthorized) :
                 Results.Ok(result);
         });
