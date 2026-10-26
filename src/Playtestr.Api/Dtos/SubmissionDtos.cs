@@ -2,7 +2,7 @@ namespace Playtestr.Api.Dtos;
 
 public record CreateSubmissionRequest
 (
-    string? TesterName,
+    bool IsAnonymous,
     List<CreateAnswerRequest> Answers
 );
 
@@ -15,6 +15,6 @@ public record SubmissionResponse
     List<AnswerResponse> Answers
 );
 
-public enum SubmitStatus { Created, PlaytestNotFound, InvalidAnswers }
+public enum SubmitStatus { Created, PlaytestNotFound, InvalidAnswers, AlreadySubmitted }
 
 public record SubmitResult(SubmitStatus Status, SubmissionResponse? Submission = null, string? Error = null);

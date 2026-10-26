@@ -1,5 +1,6 @@
 -- Example data for local testing.
--- WARNING: deletes everything in Games, Playtests, Questions, Submissions and Answers first.
+-- WARNING: deletes everything in Users, Games, Playtests, Questions, Submissions and Answers first.
+-- Every user can log in with the password: playtestr123
 -- Run from src/Playtestr.Api:  sqlite3 playtestr.db < Data/seed.sql
 
 PRAGMA foreign_keys = ON;
@@ -10,17 +11,47 @@ DELETE FROM Submissions;
 DELETE FROM Questions;
 DELETE FROM Playtests;
 DELETE FROM Games;
-DELETE FROM sqlite_sequence WHERE name IN ('Games', 'Playtests', 'Questions', 'Submissions', 'Answers');
+DELETE FROM Users;
+DELETE FROM sqlite_sequence WHERE name IN ('Users', 'Games', 'Playtests', 'Questions', 'Submissions', 'Answers');
+
+-- Users ---------------------------------------------------------------------
+-- 1-4 are developers who own the games, 5-24 are testers who submit answers.
+
+INSERT INTO Users (Id, Email, PasswordHash, Username) VALUES
+    (1, 'ember-studio@example.com', 'AQAAAAIAAYagAAAAEPgd8YGmX2Z8vFBW+z540X3dOxoy33489lVI+AlCFpF5ploL4W5QTkibKSynTXM/4A==', 'ember-studio'),
+    (2, 'orbit-works@example.com', 'AQAAAAIAAYagAAAAEPgd8YGmX2Z8vFBW+z540X3dOxoy33489lVI+AlCFpF5ploL4W5QTkibKSynTXM/4A==', 'orbit-works'),
+    (3, 'gloom-games@example.com', 'AQAAAAIAAYagAAAAEPgd8YGmX2Z8vFBW+z540X3dOxoy33489lVI+AlCFpF5ploL4W5QTkibKSynTXM/4A==', 'gloom-games'),
+    (4, 'quiet-pixel@example.com', 'AQAAAAIAAYagAAAAEPgd8YGmX2Z8vFBW+z540X3dOxoy33489lVI+AlCFpF5ploL4W5QTkibKSynTXM/4A==', 'quiet-pixel'),
+    (5, 'alex@example.com', 'AQAAAAIAAYagAAAAEPgd8YGmX2Z8vFBW+z540X3dOxoy33489lVI+AlCFpF5ploL4W5QTkibKSynTXM/4A==', 'alex'),
+    (6, 'sam@example.com', 'AQAAAAIAAYagAAAAEPgd8YGmX2Z8vFBW+z540X3dOxoy33489lVI+AlCFpF5ploL4W5QTkibKSynTXM/4A==', 'sam'),
+    (7, 'jordan@example.com', 'AQAAAAIAAYagAAAAEPgd8YGmX2Z8vFBW+z540X3dOxoy33489lVI+AlCFpF5ploL4W5QTkibKSynTXM/4A==', 'jordan'),
+    (8, 'taylor@example.com', 'AQAAAAIAAYagAAAAEPgd8YGmX2Z8vFBW+z540X3dOxoy33489lVI+AlCFpF5ploL4W5QTkibKSynTXM/4A==', 'taylor'),
+    (9, 'riley@example.com', 'AQAAAAIAAYagAAAAEPgd8YGmX2Z8vFBW+z540X3dOxoy33489lVI+AlCFpF5ploL4W5QTkibKSynTXM/4A==', 'riley'),
+    (10, 'casey@example.com', 'AQAAAAIAAYagAAAAEPgd8YGmX2Z8vFBW+z540X3dOxoy33489lVI+AlCFpF5ploL4W5QTkibKSynTXM/4A==', 'casey'),
+    (11, 'morgan@example.com', 'AQAAAAIAAYagAAAAEPgd8YGmX2Z8vFBW+z540X3dOxoy33489lVI+AlCFpF5ploL4W5QTkibKSynTXM/4A==', 'morgan'),
+    (12, 'jamie@example.com', 'AQAAAAIAAYagAAAAEPgd8YGmX2Z8vFBW+z540X3dOxoy33489lVI+AlCFpF5ploL4W5QTkibKSynTXM/4A==', 'jamie'),
+    (13, 'avery@example.com', 'AQAAAAIAAYagAAAAEPgd8YGmX2Z8vFBW+z540X3dOxoy33489lVI+AlCFpF5ploL4W5QTkibKSynTXM/4A==', 'avery'),
+    (14, 'quinn@example.com', 'AQAAAAIAAYagAAAAEPgd8YGmX2Z8vFBW+z540X3dOxoy33489lVI+AlCFpF5ploL4W5QTkibKSynTXM/4A==', 'quinn'),
+    (15, 'robin@example.com', 'AQAAAAIAAYagAAAAEPgd8YGmX2Z8vFBW+z540X3dOxoy33489lVI+AlCFpF5ploL4W5QTkibKSynTXM/4A==', 'robin'),
+    (16, 'charlie@example.com', 'AQAAAAIAAYagAAAAEPgd8YGmX2Z8vFBW+z540X3dOxoy33489lVI+AlCFpF5ploL4W5QTkibKSynTXM/4A==', 'charlie'),
+    (17, 'skyler@example.com', 'AQAAAAIAAYagAAAAEPgd8YGmX2Z8vFBW+z540X3dOxoy33489lVI+AlCFpF5ploL4W5QTkibKSynTXM/4A==', 'skyler'),
+    (18, 'dana@example.com', 'AQAAAAIAAYagAAAAEPgd8YGmX2Z8vFBW+z540X3dOxoy33489lVI+AlCFpF5ploL4W5QTkibKSynTXM/4A==', 'dana'),
+    (19, 'kai@example.com', 'AQAAAAIAAYagAAAAEPgd8YGmX2Z8vFBW+z540X3dOxoy33489lVI+AlCFpF5ploL4W5QTkibKSynTXM/4A==', 'kai'),
+    (20, 'noor@example.com', 'AQAAAAIAAYagAAAAEPgd8YGmX2Z8vFBW+z540X3dOxoy33489lVI+AlCFpF5ploL4W5QTkibKSynTXM/4A==', 'noor'),
+    (21, 'mika@example.com', 'AQAAAAIAAYagAAAAEPgd8YGmX2Z8vFBW+z540X3dOxoy33489lVI+AlCFpF5ploL4W5QTkibKSynTXM/4A==', 'mika'),
+    (22, 'ola@example.com', 'AQAAAAIAAYagAAAAEPgd8YGmX2Z8vFBW+z540X3dOxoy33489lVI+AlCFpF5ploL4W5QTkibKSynTXM/4A==', 'ola'),
+    (23, 'yuki@example.com', 'AQAAAAIAAYagAAAAEPgd8YGmX2Z8vFBW+z540X3dOxoy33489lVI+AlCFpF5ploL4W5QTkibKSynTXM/4A==', 'yuki'),
+    (24, 'ezra@example.com', 'AQAAAAIAAYagAAAAEPgd8YGmX2Z8vFBW+z540X3dOxoy33489lVI+AlCFpF5ploL4W5QTkibKSynTXM/4A==', 'ezra');
 
 -- Games ---------------------------------------------------------------------
 
-INSERT INTO Games (Id, Name, Description, ReleaseYear) VALUES
-    (1, 'Ember Hollow',    'A cozy farming sim set in a village built inside a dormant volcano.',        2025),
-    (2, 'Starlane Couriers', 'Co-op space delivery game where you and up to three friends haul cargo.',  2026),
-    (3, 'Gloomwick',       'Dark fantasy roguelike with hand-drawn dungeons and permadeath.',            2024),
-    (4, 'Pixel Pitch',     'Arcade football with 2v2 matches and power-ups.',                            2026),
-    (5, 'The Quiet Archive', 'Narrative puzzle game about restoring a forgotten library.',               2027),
-    (6, 'Turbo Tortoise',  'Kart racer for kids where every racer is a very determined animal.',         2026);
+INSERT INTO Games (Id, Name, Description, ReleaseYear, OwnerId) VALUES
+    (1, 'Ember Hollow',      'A cozy farming sim set in a village built inside a dormant volcano.',       2025, 1),
+    (2, 'Starlane Couriers', 'Co-op space delivery game where you and up to three friends haul cargo.', 2026, 2),
+    (3, 'Gloomwick',         'Dark fantasy roguelike with hand-drawn dungeons and permadeath.',           2024, 3),
+    (4, 'Pixel Pitch',       'Arcade football with 2v2 matches and power-ups.',                           2026, 2),
+    (5, 'The Quiet Archive', 'Narrative puzzle game about restoring a forgotten library.',                2027, 4),
+    (6, 'Turbo Tortoise',    'Kart racer for kids where every racer is a very determined animal.',        2026, 4);
 
 -- Playtests -----------------------------------------------------------------
 
@@ -104,14 +135,7 @@ INSERT INTO Questions (Id, Text, Type, PlaytestId) VALUES
 
 -- Submissions ---------------------------------------------------------------
 -- 8 to 15 submissions per playtest, spread out after the playtest was created.
--- About one in five testers stays anonymous (TesterName is NULL).
-
-CREATE TEMP TABLE TesterNames (N INTEGER PRIMARY KEY, Name TEXT NOT NULL);
-INSERT INTO TesterNames (N, Name) VALUES
-    (0, 'Alex'), (1, 'Sam'), (2, 'Jordan'), (3, 'Taylor'), (4, 'Riley'),
-    (5, 'Casey'), (6, 'Morgan'), (7, 'Jamie'), (8, 'Avery'), (9, 'Quinn'),
-    (10, 'Robin'), (11, 'Charlie'), (12, 'Skyler'), (13, 'Dana'), (14, 'Kai'),
-    (15, 'Noor'), (16, 'Mika'), (17, 'Ola'), (18, 'Yuki'), (19, 'Ezra');
+-- Each tester submits at most once per playtest. About one in five is anonymous.
 
 WITH RECURSIVE Seq(N) AS (
     SELECT 1 UNION ALL SELECT N + 1 FROM Seq WHERE N < 15
@@ -125,11 +149,12 @@ Numbered AS (
     SELECT ROW_NUMBER() OVER (ORDER BY PlaytestId, N) AS Id, PlaytestId, CreatedAt, N
     FROM Rows
 )
-INSERT INTO Submissions (Id, SubmittedAt, TesterName, PlaytestId)
+INSERT INTO Submissions (Id, SubmittedAt, IsAnonymous, UserId, PlaytestId)
 SELECT
     n.Id,
     strftime('%Y-%m-%d %H:%M:%S', n.CreatedAt, '+' || (n.N / 2) || ' days', '+' || ((n.Id * 37) % 600) || ' minutes'),
-    CASE WHEN n.Id % 5 = 0 THEN NULL ELSE (SELECT Name FROM TesterNames WHERE N = (n.Id * 7) % 20) END,
+    n.Id % 5 = 0,
+    5 + (n.N - 1 + n.PlaytestId * 3) % 20,
     n.PlaytestId
 FROM Numbered n;
 
@@ -181,7 +206,6 @@ JOIN Questions q ON q.PlaytestId = s.PlaytestId
 WHERE q.Type = 0 OR (s.Id + q.Id) % 4 <> 0
 ORDER BY s.Id, q.Id;
 
-DROP TABLE TesterNames;
 DROP TABLE TextAnswers;
 
 COMMIT;

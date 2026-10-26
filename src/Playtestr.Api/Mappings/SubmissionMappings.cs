@@ -7,5 +7,5 @@ namespace Playtestr.Api.Mappings;
 public static class SubmissionMappings
 {
     public static SubmissionResponse ToResponse(this Submission s) =>
-        new(s.Id, s.PlaytestId, s.TesterName, s.SubmittedAt, s.Answers.Select(a => a.ToResponse()).ToList());
+        new(s.Id, s.PlaytestId, s.IsAnonymous ? null : s.User.Username, s.SubmittedAt, s.Answers.Select(a => a.ToResponse()).ToList());
 }

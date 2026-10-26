@@ -58,10 +58,15 @@ namespace Playtestr.Api.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("OwnerId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("ReleaseYear")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("Games");
                 });
@@ -123,18 +128,23 @@ namespace Playtestr.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("IsAnonymous")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("PlaytestId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("SubmittedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("TesterName")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PlaytestId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Submissions");
                 });
@@ -187,6 +197,17 @@ namespace Playtestr.Api.Migrations
                     b.Navigation("Submission");
                 });
 
+            modelBuilder.Entity("Playtestr.Api.Models.Game", b =>
+                {
+                    b.HasOne("Playtestr.Api.Models.User", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Owner");
+                });
+
             modelBuilder.Entity("Playtestr.Api.Models.Playtest", b =>
                 {
                     b.HasOne("Playtestr.Api.Models.Game", "Game")
@@ -217,7 +238,15 @@ namespace Playtestr.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Playtestr.Api.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Playtest");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Playtestr.Api.Models.Game", b =>

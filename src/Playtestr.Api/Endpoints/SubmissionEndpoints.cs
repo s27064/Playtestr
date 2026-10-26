@@ -1,5 +1,7 @@
+using System.Security.Claims;
 using Playtestr.Api.Dtos;
 using Playtestr.Api.Services.Submissions;
+using Playtestr.Api.Extensions;
 
 namespace Playtestr.Api.Endpoints;
 
@@ -23,16 +25,19 @@ public static class SubmissionEndpoints
                 Results.Ok(submissions);
         }).WithTags("Submissions");
 
-        app.MapPost("/playtests/{playtestId}/submissions", async (int playtestId, CreateSubmissionRequest request, ISubmissionService service) =>
+        app.MapPost("/playtests/{playtestId}/submissions", async (int playtestId, CreateSubmissionRequest request, ClaimsPrincipal user, ISubmissionService service) =>
         {
-            var result = await service.SubmitAsync(playtestId, request);
+            var result = await service.SubmitAsync(playtestId, user.GetUserId(), request);
             return result.Status switch
             {
                 SubmitStatus.PlaytestNotFound => Results.Problem(result.Error, statusCode: StatusCodes.Status404NotFound),
                 SubmitStatus.InvalidAnswers => Results.Problem(result.Error, statusCode: StatusCodes.Status400BadRequest),
+                SubmitStatus.AlreadySubmitted => Results.Problem(result.Error, statusCode: StatusCodes.Status409Conflict),
                 _ => Results.Created($"/submissions/{result.Submission!.Id}", result.Submission)
             };
-        }).WithTags("Submissions");
+        })
+        .RequireAuthorization()
+        .WithTags("Submissions");
 
         app.MapDelete("/submissions/{id}", async (int id, ISubmissionService service) =>
         {

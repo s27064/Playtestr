@@ -12,5 +12,6 @@ public record GameResponse(
     int Id,
     string Name,
     string Description,
-    int ReleaseYear
+    int ReleaseYear,
+    int OwnerId
 );

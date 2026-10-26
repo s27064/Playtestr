@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using Playtestr.Api.Dtos;
+using Playtestr.Api.Extensions;
 using Playtestr.Api.Services.Games;
 
 namespace Playtestr.Api.Endpoints;
@@ -19,9 +21,9 @@ public static class GameEndpoints
                 Results.Ok(game);
         });
 
-        group.MapPost("/", async (CreateGameRequest request, IGameService service) =>
+        group.MapPost("/", async (CreateGameRequest request, IGameService service, ClaimsPrincipal user) =>
         {
-            var game = await service.AddAsync(request);
+            var game = await service.AddAsync(request, user.GetUserId());
             return Results.Created($"/games/{game.Id}", game);
         });
 

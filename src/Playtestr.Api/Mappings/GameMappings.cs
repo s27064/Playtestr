@@ -6,5 +6,5 @@ namespace Playtestr.Api.Mappings;
 public static class GameMappings
 {
     public static GameResponse ToResponse(this Game g) =>
-        new(g.Id, g.Name, g.Description, g.ReleaseYear);
+        new(g.Id, g.Name, g.Description, g.ReleaseYear, g.OwnerId);
 }

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Playtestr.Api.Data;
 using Playtestr.Api.Dtos;
+using Playtestr.Api.Extensions;
 using Playtestr.Api.Mappings;
 using Playtestr.Api.Models;
 
@@ -13,13 +14,14 @@ public class GameService(AppDbContext context) : IGameService
             .Select(g => g.ToResponse())
             .ToListAsync();
 
-    public async Task<GameResponse> AddAsync(CreateGameRequest request)
+    public async Task<GameResponse> AddAsync(CreateGameRequest request, int ownerId)
     {
         var newGame = new Game
         {
             Name = request.Name,
             Description = request.Description,
-            ReleaseYear = request.ReleaseYear
+            ReleaseYear = request.ReleaseYear,
+            OwnerId = ownerId
         };
 
         context.Games.Add(newGame);

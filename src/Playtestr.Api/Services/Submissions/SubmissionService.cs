@@ -21,6 +21,7 @@ public class SubmissionService(AppDbContext context) : ISubmissionService
     {
         var submission = await context.Submissions
             .Include(s => s.Answers)
+            .Include(s => s.User)
             .FirstOrDefaultAsync(s => s.Id == id);
         return submission is null ? null : submission.ToResponse();
     }
@@ -31,18 +32,20 @@ public class SubmissionService(AppDbContext context) : ISubmissionService
         var submissions = await context.Submissions
             .Where(s => s.PlaytestId == playtestId)
             .Include(s => s.Answers)
+            .Include(s => s.User)
             .ToListAsync();
         return submissions.Select(s => s.ToResponse()).ToList();
     }
 
-    // 1. check that playtest exists
-    // 2. load the playtest's questions
-    // 3. for each answer check that its QuestionId is one of those questions. A rating questions has a Rating, a Text has text
-    // 4. if anything fails return InvalidAnswers with a message
-    public async Task<SubmitResult> SubmitAsync(int playtestId, CreateSubmissionRequest request)
+    public async Task<SubmitResult> SubmitAsync(int playtestId, int userId, CreateSubmissionRequest request)
     {
         if (!await context.Playtests.AnyAsync(p => p.Id == playtestId))
             return new(SubmitStatus.PlaytestNotFound, Error: "Playtest not found");
+
+         var alreadySubmitted = await context.Submissions
+            .AnyAsync(s => s.PlaytestId == playtestId && s.UserId == userId);
+        if (alreadySubmitted)
+            return new(SubmitStatus.AlreadySubmitted, Error: "You have already submitted answers for this playtest.");
 
         var questions = await context.Questions
             .Where(q => q.PlaytestId == playtestId)
@@ -67,7 +70,8 @@ public class SubmissionService(AppDbContext context) : ISubmissionService
         var submission = new Submission
         {
             PlaytestId = playtestId,
-            TesterName = request.TesterName,
+            UserId = userId,
+            IsAnonymous = request.IsAnonymous,
             Answers = request.Answers
                 .Select(a => new Answer { QuestionId = a.QuestionId, Rating = a.Rating, Text = a.Text })
                 .ToList()
@@ -75,6 +79,9 @@ public class SubmissionService(AppDbContext context) : ISubmissionService
 
         context.Submissions.Add(submission);
         await context.SaveChangesAsync();
+
+        // Load the user so the response can show the username
+        await context.Entry(submission).Reference(s => s.User).LoadAsync();
 
         return new(SubmitStatus.Created, submission.ToResponse());
     }
