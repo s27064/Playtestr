@@ -1,4 +1,8 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Playtestr.Api.Dtos;
+using Playtestr.Api.Extensions;
+using Playtestr.Api.Services;
 using Playtestr.Api.Services.Playtests;
 
 namespace Playtestr.Api.Endpoints;
@@ -28,28 +32,43 @@ public static class PlaytestEndpoints
                 Results.Ok(playtests);
         }).WithTags("Playtests");
 
-        app.MapPost("/games/{gameId}/playtests", async (int gameId, CreatePlaytestRequest request, IPlaytestService service) =>
+        app.MapPost("/games/{gameId}/playtests", async (int gameId, CreatePlaytestRequest request, IPlaytestService service, ClaimsPrincipal user) =>
         {
-            var playtest = await service.AddAsync(gameId, request);
-            return playtest is null ?
-                Results.Problem("Game not found", statusCode: StatusCodes.Status404NotFound) :
-                Results.Created($"/playtests/{playtest.Id}", playtest);
-        }).WithTags("Playtests");
+            var result = await service.AddAsync(gameId, user.GetUserId(), request);
+            return result.Status switch
+            {
+                OperationStatus.NotFound => Results.Problem("Game not found", statusCode: StatusCodes.Status404NotFound),
+                OperationStatus.Forbidden => Results.Problem("You must be an owner of this game to add a playtest to it", statusCode: StatusCodes.Status403Forbidden),
+                _ => Results.Created($"/playtests/{result.Value!.Id}", result.Value)
+            };
+        })
+        .RequireAuthorization()
+        .WithTags("Playtests");
 
-        app.MapPut("/playtests/{id}", async (int id, CreatePlaytestRequest request, IPlaytestService service) =>
+        app.MapPut("/playtests/{id}", async (int id, CreatePlaytestRequest request, IPlaytestService service, ClaimsPrincipal user) =>
         {
-            var playtest = await service.UpdateAsync(id, request);
-            return playtest is null ?
-                Results.Problem("Playtest not found", statusCode: StatusCodes.Status404NotFound) :
-                Results.Ok(playtest);
-        }).WithTags("Playtests");
+            var result = await service.UpdateAsync(id, user.GetUserId(), request);
+            return result.Status switch
+            {
+                OperationStatus.NotFound => Results.Problem("Game not found", statusCode: StatusCodes.Status404NotFound),
+                OperationStatus.Forbidden => Results.Problem("You must be an owner of this game to modify its playtests", statusCode: StatusCodes.Status403Forbidden),
+                _ => Results.Ok(result.Value)
+            };
+        })
+        .RequireAuthorization()
+        .WithTags("Playtests");
 
-        app.MapDelete("/playtests/{id}", async (int id, IPlaytestService service) =>
+        app.MapDelete("/playtests/{id}", async (int id, IPlaytestService service, ClaimsPrincipal user) =>
         {
-            var success = await service.DeleteAsync(id);
-            return success ?
-                Results.NoContent() :
-                Results.Problem("Playtest not found", statusCode: StatusCodes.Status404NotFound);
-        }).WithTags("Playtests");
+            var status = await service.DeleteAsync(id, user.GetUserId());
+            return status switch 
+            {
+                OperationStatus.NotFound => Results.Problem("Game not found", statusCode: StatusCodes.Status404NotFound),
+                OperationStatus.Forbidden => Results.Problem("You must be an owner of this game to delete its playtests", statusCode: StatusCodes.Status403Forbidden),
+                _ => Results.NoContent()
+            };
+        })
+        .RequireAuthorization()
+        .WithTags("Playtests");
     }
 }
