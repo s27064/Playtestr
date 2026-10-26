@@ -8,9 +8,14 @@ namespace Playtestr.Api.Services.Questions;
 
 public class QuestionService(AppDbContext context) : IQuestionService
 {
-    public async Task<QuestionResponse?> AddAsync(int playtestId, CreateQuestionRequest request)
+    public async Task<OperationResult<QuestionResponse>> AddAsync(int playtestId, int userId, CreateQuestionRequest request)
     {
-        if (!await context.Playtests.AnyAsync(p => p.Id == playtestId)) return null;
+        var playtest = await context.Playtests
+            .Include(p => p.Game)
+            .FirstOrDefaultAsync(p => p.Id == playtestId);
+
+        if (playtest is null) return new(OperationStatus.NotFound);
+        if (playtest.Game.OwnerId != userId) return new(OperationStatus.Forbidden);
 
         var question = new Question
         {
@@ -21,7 +26,7 @@ public class QuestionService(AppDbContext context) : IQuestionService
 
         context.Questions.Add(question);
         await context.SaveChangesAsync();
-        return question.ToResponse();
+        return new(OperationStatus.Success, question.ToResponse());
     }
 
     public async Task<IReadOnlyList<QuestionResponse>> GetAllAsync() =>
@@ -45,29 +50,40 @@ public class QuestionService(AppDbContext context) : IQuestionService
             .ToListAsync();
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<OperationStatus> DeleteAsync(int id, int userId)
     {
-        var question = await context.Questions.FindAsync(id);
-        if (question is null) return false;
+        var question = await context.Questions
+            .Include(q => q.Playtest)
+                .ThenInclude(p => p.Game)
+            .FirstOrDefaultAsync(q => q.Id == id);
+
+        if (question is null) return OperationStatus.NotFound;
+        if (question.Playtest.Game.OwnerId != userId) return OperationStatus.Forbidden;
+
         context.Questions.Remove(question);
         await context.SaveChangesAsync();
-        return true;
+        return OperationStatus.Success;
     }
 
     // the text can always be edited but the type cant change once answers exist
-    public async Task<UpdateQuestionResult> UpdateAsync(int id, CreateQuestionRequest request)
+    public async Task<OperationResult<QuestionResponse>> UpdateAsync(int id, int userId, CreateQuestionRequest request)
     {
-        var question = await context.Questions.FindAsync(id);
-        if (question is null) return new(UpdateQuestionStatus.NotFound);
+        var question = await context.Questions
+            .Include(q => q.Playtest)
+                .ThenInclude(p => p.Game)
+            .FirstOrDefaultAsync(q => q.Id == id);
+
+        if (question is null) return new(OperationStatus.NotFound);
+        if (question.Playtest.Game.OwnerId != userId) return new(OperationStatus.Forbidden);
 
         var typeChanged = question.Type != request.Type;
         if (typeChanged && await context.Answers.AnyAsync(a => a.QuestionId == id))
-            return new(UpdateQuestionStatus.HasAnswers);
+            return new(OperationStatus.Conflict);
 
         question.Text = request.Text;
         question.Type = request.Type;
         await context.SaveChangesAsync();
 
-        return new(UpdateQuestionStatus.Updated, question.ToResponse());
+        return new(OperationStatus.Success, question.ToResponse());
     }
 }

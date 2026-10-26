@@ -14,7 +14,3 @@ public record QuestionResponse(
     QuestionType Type,
     int PlaytestId
 );
-
-public enum UpdateQuestionStatus { Updated, NotFound, HasAnswers }
-
-public record UpdateQuestionResult(UpdateQuestionStatus Status, QuestionResponse? Question = null);

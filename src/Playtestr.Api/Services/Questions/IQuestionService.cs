@@ -7,7 +7,7 @@ public interface IQuestionService
     Task<IReadOnlyList<QuestionResponse>> GetAllAsync();
     Task<QuestionResponse?> GetByIdAsync(int id);
     Task<IReadOnlyList<QuestionResponse>?> GetByPlaytestIdAsync(int playtestId);
-    Task<QuestionResponse?> AddAsync(int playtestId, CreateQuestionRequest request);
-    Task<bool> DeleteAsync(int id);
-    Task<UpdateQuestionResult> UpdateAsync(int id, CreateQuestionRequest request);
+    Task<OperationResult<QuestionResponse>> AddAsync(int playtestId, int userId, CreateQuestionRequest request);
+    Task<OperationStatus> DeleteAsync(int id, int userId);
+    Task<OperationResult<QuestionResponse>> UpdateAsync(int id, int userId, CreateQuestionRequest request);
 }
