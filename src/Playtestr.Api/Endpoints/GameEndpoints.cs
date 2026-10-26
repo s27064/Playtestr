@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Playtestr.Api.Dtos;
 using Playtestr.Api.Extensions;
+using Playtestr.Api.Services;
 using Playtestr.Api.Services.Games;
 
 namespace Playtestr.Api.Endpoints;
@@ -27,20 +28,26 @@ public static class GameEndpoints
             return Results.Created($"/games/{game.Id}", game);
         });
 
-        group.MapPut("/{id}", async (int id, CreateGameRequest request, IGameService service) =>
+        group.MapPut("/{id}", async (int id, CreateGameRequest request, IGameService service, ClaimsPrincipal user) =>
         {
-            var game = await service.UpdateAsync(id, request);
-            return game is null ?
-                Results.Problem("Game not found", statusCode: StatusCodes.Status404NotFound) :
-                Results.Ok(game);
-        });
+            var result = await service.UpdateAsync(id, user.GetUserId(), request);
+            return result.Status switch
+            {
+                OperationStatus.NotFound => Results.Problem("Game not found", statusCode: StatusCodes.Status404NotFound),
+                OperationStatus.Forbidden => Results.Problem("You are not the owner of this game", statusCode: StatusCodes.Status403Forbidden),
+                _ => Results.Ok(result.Value)
+            };
+        }).RequireAuthorization();
 
-        group.MapDelete("/{id}", async (int id, IGameService service) =>
+        group.MapDelete("/{id}", async (int id, IGameService service, ClaimsPrincipal user) =>
         {
-            var success = await service.DeleteAsync(id);
-            return success ?
-                Results.NoContent() :
-                Results.Problem("Game not found", statusCode: StatusCodes.Status404NotFound);
-        });
+            var result = await service.DeleteAsync(id, user.GetUserId());
+            return result switch
+            {
+                OperationStatus.NotFound => Results.Problem("Game not found", statusCode: StatusCodes.Status404NotFound),
+                OperationStatus.Forbidden => Results.Problem("You are not the owner of this game", statusCode: StatusCodes.Status403Forbidden),
+                _ => Results.NoContent()
+            };
+        }).RequireAuthorization();
     }
 }

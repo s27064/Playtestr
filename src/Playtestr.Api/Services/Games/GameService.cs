@@ -1,3 +1,4 @@
+using System.Reflection.Metadata.Ecma335;
 using Microsoft.EntityFrameworkCore;
 using Playtestr.Api.Data;
 using Playtestr.Api.Dtos;
@@ -14,14 +15,14 @@ public class GameService(AppDbContext context) : IGameService
             .Select(g => g.ToResponse())
             .ToListAsync();
 
-    public async Task<GameResponse> AddAsync(CreateGameRequest request, int ownerId)
+    public async Task<GameResponse> AddAsync(CreateGameRequest request, int userId)
     {
         var newGame = new Game
         {
             Name = request.Name,
             Description = request.Description,
             ReleaseYear = request.ReleaseYear,
-            OwnerId = ownerId
+            OwnerId = userId
         };
 
         context.Games.Add(newGame);
@@ -29,13 +30,14 @@ public class GameService(AppDbContext context) : IGameService
         return newGame.ToResponse();
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<OperationStatus> DeleteAsync(int id, int userId)
     {
         var game = await context.Games.FindAsync(id);
-        if (game is null) return false;
+        if (game is null) return OperationStatus.NotFound;
+        if (game.OwnerId != userId) return OperationStatus.Forbidden;
         context.Games.Remove(game);
         await context.SaveChangesAsync();
-        return true;
+        return OperationStatus.Success;
     }
 
     public async Task<GameResponse?> GetByIdAsync(int id)
@@ -44,16 +46,17 @@ public class GameService(AppDbContext context) : IGameService
         return game?.ToResponse();
     }
 
-    public async Task<GameResponse?> UpdateAsync(int id, CreateGameRequest request)
+    public async Task<OperationResult<GameResponse>> UpdateAsync(int id, int userId, CreateGameRequest request)
     {
         var game = await context.Games.FindAsync(id);
-        if (game is null) return null;
+        if (game is null) return new OperationResult<GameResponse>(OperationStatus.NotFound);
+        if (game.OwnerId != userId) return new OperationResult<GameResponse>(OperationStatus.Forbidden);
 
         game.Name = request.Name;
         game.Description = request.Description;
         game.ReleaseYear = request.ReleaseYear;
 
         await context.SaveChangesAsync();
-        return game.ToResponse();
+        return new OperationResult<GameResponse>(OperationStatus.Success, game.ToResponse());
     }
 }
