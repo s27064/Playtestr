@@ -81,7 +81,14 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
-    scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.Migrate();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+
+    if (!db.Users.Any())
+    {
+        var seedPath = Path.Combine(AppContext.BaseDirectory, "Data", "seed.sql");
+        db.Database.ExecuteSqlRaw(File.ReadAllText(seedPath));
+    }
 
     app.MapOpenApi();
     app.MapScalarApiReference(options => options.AddPreferredSecuritySchemes("Bearer"));
