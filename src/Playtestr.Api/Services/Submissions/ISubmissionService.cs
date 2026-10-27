@@ -4,8 +4,8 @@ namespace Playtestr.Api.Services.Submissions;
 
 public interface ISubmissionService
 {
-    Task<SubmitResult> SubmitAsync(int playtestId, int userId, CreateSubmissionRequest request);
-    Task<SubmissionResponse?> GetByIdAsync(int id);
-    Task<IReadOnlyList<SubmissionResponse>?> GetByPlaytestIdAsync(int playtestId);
-    Task<bool> DeleteAsync(int id);
+    Task<OperationResult<SubmissionResponse>> SubmitAsync(int playtestId, int userId, CreateSubmissionRequest request);
+    Task<OperationResult<SubmissionResponse>> GetByIdAsync(int id, int userId);
+    Task<OperationResult<IReadOnlyList<SubmissionResponse>>> GetByPlaytestIdAsync(int playtestId, int userId);
+    Task<OperationStatus> DeleteAsync(int id, int userId);
 }
