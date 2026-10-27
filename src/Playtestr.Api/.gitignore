@@ -1,9 +1,3 @@
 *.db
 *.db-shm
 *.db-wal
-bin/
-obj/
-TestResults/
-*.user
-.vs/
-.idea/
