@@ -1,27 +1,24 @@
-using Scalar.AspNetCore;
-using Playtestr.Api.Dtos;
-using Playtestr.Api.Services.Games;
-using Playtestr.Api.Data;
-using Microsoft.EntityFrameworkCore;
-using Playtestr.Api.Endpoints;
-using Playtestr.Api.Services.Playtests;
+using System.Text;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
+using Playtestr.Api.Data;
+using Playtestr.Api.Endpoints;
+using Playtestr.Api.Models;
+using Playtestr.Api.Services.Auth;
+using Playtestr.Api.Services.Games;
+using Playtestr.Api.Services.Playtests;
+using Playtestr.Api.Services.PlaytestSummaries;
 using Playtestr.Api.Services.Questions;
 using Playtestr.Api.Services.Submissions;
-using Playtestr.Api.Services.PlaytestSummaries;
-using Playtestr.Api.Services.Auth;
-using Microsoft.AspNetCore.Identity;
-using Playtestr.Api.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Microsoft.OpenApi;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+// Services
 builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<IPlaytestService, PlaytestService>();
 builder.Services.AddScoped<IQuestionService, QuestionService>();
@@ -30,15 +27,19 @@ builder.Services.AddScoped<IPlaytestSummaryService, PlaytestSummaryService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddSingleton<ITokenService, TokenService>();
+
 builder.Services.AddValidation();
 builder.Services.AddProblemDetails();
 
+// Database
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
 
+// JSON
 builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
+// Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -56,6 +57,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+builder.Services.AddAuthorization();
+
+// OpenAPI with Bearer token support
 builder.Services.AddOpenApi(options =>
 {
     options.AddDocumentTransformer((document, context, cancellationToken) =>
@@ -72,24 +76,25 @@ builder.Services.AddOpenApi(options =>
     });
 });
 
-builder.Services.AddAuthorization();
-
 var app = builder.Build();
-
-app.UseExceptionHandler();
-app.UseStatusCodePages();
-app.UseHttpsRedirection();
-
-app.UseAuthentication();
-app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())
 {
+    using var scope = app.Services.CreateScope();
+    scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.Migrate();
+
     app.MapOpenApi();
     app.MapScalarApiReference(options => options.AddPreferredSecuritySchemes("Bearer"));
 }
 
-//Endpoints
+// Middleware
+app.UseExceptionHandler();
+app.UseStatusCodePages();
+app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
+
+// Endpoints
 app.MapGameEndpoints();
 app.MapPlaytestEndpoints();
 app.MapQuestionEndpoints();
