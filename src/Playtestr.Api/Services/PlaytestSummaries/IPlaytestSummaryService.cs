@@ -5,5 +5,5 @@ namespace Playtestr.Api.Services.PlaytestSummaries;
 
 public interface IPlaytestSummaryService
 {
-    Task<PlaytestSummaryResponse?> GetPlaytestSummaryAsync(int playtestId);
+    Task<OperationResult<PlaytestSummaryResponse>> GetPlaytestSummaryAsync(int playtestId, int userId);
 }

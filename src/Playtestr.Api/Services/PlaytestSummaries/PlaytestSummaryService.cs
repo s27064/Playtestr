@@ -6,10 +6,14 @@ namespace Playtestr.Api.Services.PlaytestSummaries;
 
 public class PlaytestSummaryService(AppDbContext context) : IPlaytestSummaryService
 {
-    public async Task<PlaytestSummaryResponse?> GetPlaytestSummaryAsync(int playtestId)
+    public async Task<OperationResult<PlaytestSummaryResponse>> GetPlaytestSummaryAsync(int playtestId, int userId)
     {
-        var playtest = await context.Playtests.FindAsync(playtestId);
-        if (playtest is null) return null;
+        var playtest = await context.Playtests
+            .Include(p => p.Game)
+            .FirstOrDefaultAsync(p => p.Id == playtestId);
+
+        if (playtest is null) return new(OperationStatus.NotFound, Error: "Playtest not found");
+        if (playtest.Game.OwnerId != userId) return new(OperationStatus.Forbidden, Error: "Only an owner of the game can see the summary of its playtest");
 
         var questions = await context.Questions
             .Where(q => q.PlaytestId == playtestId)
@@ -47,6 +51,6 @@ public class PlaytestSummaryService(AppDbContext context) : IPlaytestSummaryServ
             questionSummaries
         );
 
-        return playtestSummary;
+        return new(OperationStatus.Success, playtestSummary);
     }
 }
