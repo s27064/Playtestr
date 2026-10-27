@@ -1,23 +1,16 @@
--- Example data for local testing.
+-- Example data for local testing (PostgreSQL).
 -- WARNING: deletes everything in Users, Games, Playtests, Questions, Submissions and Answers first.
 -- Every user can log in with the password: playtestr123
--- Run from src/Playtestr.Api:  sqlite3 playtestr.db < Data/seed.sql
+-- Run from the repo root:  docker compose exec -T db psql -U playtestr -d playtestr < src/Playtestr.Api/Data/seed.sql
 
-PRAGMA foreign_keys = ON;
-BEGIN TRANSACTION;
+BEGIN;
 
-DELETE FROM Answers;
-DELETE FROM Submissions;
-DELETE FROM Questions;
-DELETE FROM Playtests;
-DELETE FROM Games;
-DELETE FROM Users;
-DELETE FROM sqlite_sequence WHERE name IN ('Users', 'Games', 'Playtests', 'Questions', 'Submissions', 'Answers');
+TRUNCATE "Answers", "Submissions", "Questions", "Playtests", "Games", "Users" RESTART IDENTITY;
 
 -- Users ---------------------------------------------------------------------
 -- 1-4 are developers who own the games, 5-24 are testers who submit answers.
 
-INSERT INTO Users (Id, Email, PasswordHash, Username) VALUES
+INSERT INTO "Users" ("Id", "Email", "PasswordHash", "Username") VALUES
     (1, 'ember-studio@example.com', 'AQAAAAIAAYagAAAAEPgd8YGmX2Z8vFBW+z540X3dOxoy33489lVI+AlCFpF5ploL4W5QTkibKSynTXM/4A==', 'ember-studio'),
     (2, 'orbit-works@example.com', 'AQAAAAIAAYagAAAAEPgd8YGmX2Z8vFBW+z540X3dOxoy33489lVI+AlCFpF5ploL4W5QTkibKSynTXM/4A==', 'orbit-works'),
     (3, 'gloom-games@example.com', 'AQAAAAIAAYagAAAAEPgd8YGmX2Z8vFBW+z540X3dOxoy33489lVI+AlCFpF5ploL4W5QTkibKSynTXM/4A==', 'gloom-games'),
@@ -45,7 +38,7 @@ INSERT INTO Users (Id, Email, PasswordHash, Username) VALUES
 
 -- Games ---------------------------------------------------------------------
 
-INSERT INTO Games (Id, Name, Description, ReleaseYear, OwnerId) VALUES
+INSERT INTO "Games" ("Id", "Name", "Description", "ReleaseYear", "OwnerId") VALUES
     (1, 'Ember Hollow',      'A cozy farming sim set in a village built inside a dormant volcano.',       2025, 1),
     (2, 'Starlane Couriers', 'Co-op space delivery game where you and up to three friends haul cargo.', 2026, 2),
     (3, 'Gloomwick',         'Dark fantasy roguelike with hand-drawn dungeons and permadeath.',           2024, 3),
@@ -55,23 +48,23 @@ INSERT INTO Games (Id, Name, Description, ReleaseYear, OwnerId) VALUES
 
 -- Playtests -----------------------------------------------------------------
 
-INSERT INTO Playtests (Id, Title, Description, CreatedAt, GameId) VALUES
-    (1,  'Alpha – first week',        'Covers the tutorial and the first in-game week.',                 '2026-06-02 10:00:00', 1),
-    (2,  'Fishing update',            'Testing the new fishing minigame and rod upgrades.',              '2026-08-14 14:30:00', 1),
-    (3,  'Closed beta',               'Four-player sessions on the first three delivery routes.',        '2026-07-01 18:00:00', 2),
-    (4,  'Netcode stress test',       'Full lobbies with simulated high latency.',                       '2026-09-20 19:00:00', 2),
-    (5,  'Combat feel',               'Focus on the new parry and dodge timing.',                        '2026-05-10 12:00:00', 3),
-    (6,  'Boss rush',                 'All five bosses back to back with a fixed loadout.',              '2026-06-25 16:00:00', 3),
-    (7,  'Difficulty curve',          'Floors 1 to 10 with the rebalanced enemy stats.',                 '2026-10-01 11:00:00', 3),
-    (8,  'Controls prototype',        'Comparing the classic and the twin-stick control schemes.',       '2026-07-18 15:00:00', 4),
-    (9,  'Tournament mode',           'Bracket mode with eight local players.',                          '2026-09-05 17:30:00', 4),
-    (10, 'Chapter one',               'The prologue and the first wing of the library.',                 '2026-08-01 09:00:00', 5),
-    (11, 'Puzzle hint system',        'Testing whether the three-tier hints are too generous.',          '2026-10-10 13:00:00', 5),
-    (12, 'Kids focus group',          'Playtest with children aged 6–10 and their parents.',             '2026-09-12 10:00:00', 6);
+INSERT INTO "Playtests" ("Id", "Title", "Description", "CreatedAt", "GameId") VALUES
+    (1,  'Alpha – first week',        'Covers the tutorial and the first in-game week.',                 '2026-06-02 10:00:00+00', 1),
+    (2,  'Fishing update',            'Testing the new fishing minigame and rod upgrades.',              '2026-08-14 14:30:00+00', 1),
+    (3,  'Closed beta',               'Four-player sessions on the first three delivery routes.',        '2026-07-01 18:00:00+00', 2),
+    (4,  'Netcode stress test',       'Full lobbies with simulated high latency.',                       '2026-09-20 19:00:00+00', 2),
+    (5,  'Combat feel',               'Focus on the new parry and dodge timing.',                        '2026-05-10 12:00:00+00', 3),
+    (6,  'Boss rush',                 'All five bosses back to back with a fixed loadout.',              '2026-06-25 16:00:00+00', 3),
+    (7,  'Difficulty curve',          'Floors 1 to 10 with the rebalanced enemy stats.',                 '2026-10-01 11:00:00+00', 3),
+    (8,  'Controls prototype',        'Comparing the classic and the twin-stick control schemes.',       '2026-07-18 15:00:00+00', 4),
+    (9,  'Tournament mode',           'Bracket mode with eight local players.',                          '2026-09-05 17:30:00+00', 4),
+    (10, 'Chapter one',               'The prologue and the first wing of the library.',                 '2026-08-01 09:00:00+00', 5),
+    (11, 'Puzzle hint system',        'Testing whether the three-tier hints are too generous.',          '2026-10-10 13:00:00+00', 5),
+    (12, 'Kids focus group',          'Playtest with children aged 6–10 and their parents.',             '2026-09-12 10:00:00+00', 6);
 
 -- Questions (Type: 0 = Rating, 1 = Text) -------------------------------------
 
-INSERT INTO Questions (Id, Text, Type, PlaytestId) VALUES
+INSERT INTO "Questions" ("Id", "Text", "Type", "PlaytestId") VALUES
     (1,  'How fun was the session overall?',                         0, 1),
     (2,  'How clear was the tutorial?',                              0, 1),
     (3,  'How relaxing did the game feel?',                          0, 1),
@@ -137,33 +130,33 @@ INSERT INTO Questions (Id, Text, Type, PlaytestId) VALUES
 -- 8 to 15 submissions per playtest, spread out after the playtest was created.
 -- Each tester submits at most once per playtest. About one in five is anonymous.
 
-WITH RECURSIVE Seq(N) AS (
-    SELECT 1 UNION ALL SELECT N + 1 FROM Seq WHERE N < 15
+WITH RECURSIVE seq(n) AS (
+    SELECT 1 UNION ALL SELECT n + 1 FROM seq WHERE n < 15
 ),
-Rows AS (
-    SELECT p.Id AS PlaytestId, p.CreatedAt, s.N
-    FROM Playtests p
-    JOIN Seq s ON s.N <= 8 + (p.Id * 5) % 8
+submission_rows AS (
+    SELECT p."Id" AS playtest_id, p."CreatedAt" AS created_at, s.n
+    FROM "Playtests" p
+    JOIN seq s ON s.n <= 8 + (p."Id" * 5) % 8
 ),
-Numbered AS (
-    SELECT ROW_NUMBER() OVER (ORDER BY PlaytestId, N) AS Id, PlaytestId, CreatedAt, N
-    FROM Rows
+numbered AS (
+    SELECT (ROW_NUMBER() OVER (ORDER BY playtest_id, n))::int AS id, playtest_id, created_at, n
+    FROM submission_rows
 )
-INSERT INTO Submissions (Id, SubmittedAt, IsAnonymous, UserId, PlaytestId)
+INSERT INTO "Submissions" ("Id", "SubmittedAt", "IsAnonymous", "UserId", "PlaytestId")
 SELECT
-    n.Id,
-    strftime('%Y-%m-%d %H:%M:%S', n.CreatedAt, '+' || (n.N / 2) || ' days', '+' || ((n.Id * 37) % 600) || ' minutes'),
-    n.Id % 5 = 0,
-    5 + (n.N - 1 + n.PlaytestId * 3) % 20,
-    n.PlaytestId
-FROM Numbered n;
+    id,
+    created_at + (n / 2) * INTERVAL '1 day' + ((id * 37) % 600) * INTERVAL '1 minute',
+    id % 5 = 0,
+    5 + (n - 1 + playtest_id * 3) % 20,
+    playtest_id
+FROM numbered;
 
 -- Answers -------------------------------------------------------------------
 -- Every submission rates every Rating question. Each question gets its own average
 -- (somewhere between ~2 and ~4.5) so the results endpoint shows different numbers.
 -- Roughly one in four text questions is skipped, like a tester leaving it blank.
 
-CREATE TEMP TABLE TextAnswers (N INTEGER PRIMARY KEY, Text TEXT NOT NULL);
+CREATE TEMP TABLE TextAnswers (N INTEGER PRIMARY KEY, Text TEXT NOT NULL) ON COMMIT DROP;
 INSERT INTO TextAnswers (N, Text) VALUES
     (0,  'Loved the atmosphere, the music really sells it.'),
     (1,  'It took me a while to figure out what I was supposed to do next.'),
@@ -191,21 +184,27 @@ INSERT INTO TextAnswers (N, Text) VALUES
     (23, 'The colour palette made some enemies hard to see.'),
     (24, 'I would definitely recommend this to friends.');
 
-INSERT INTO Answers (QuestionId, Rating, SubmissionId, Text)
+INSERT INTO "Answers" ("QuestionId", "Rating", "SubmissionId", "Text")
 SELECT
-    q.Id,
-    CASE WHEN q.Type = 0
-        THEN MIN(5, MAX(1, 2 + q.Id % 3 + (s.Id * 7 + q.Id * 3) % 3 - (s.Id + q.Id) % 2))
+    q."Id",
+    CASE WHEN q."Type" = 0
+        THEN LEAST(5, GREATEST(1, 2 + q."Id" % 3 + (s."Id" * 7 + q."Id" * 3) % 3 - (s."Id" + q."Id") % 2))
     END,
-    s.Id,
-    CASE WHEN q.Type = 1
-        THEN (SELECT Text FROM TextAnswers WHERE N = (s.Id * 11 + q.Id * 5) % 25)
+    s."Id",
+    CASE WHEN q."Type" = 1
+        THEN (SELECT Text FROM TextAnswers WHERE N = (s."Id" * 11 + q."Id" * 5) % 25)
     END
-FROM Submissions s
-JOIN Questions q ON q.PlaytestId = s.PlaytestId
-WHERE q.Type = 0 OR (s.Id + q.Id) % 4 <> 0
-ORDER BY s.Id, q.Id;
+FROM "Submissions" s
+JOIN "Questions" q ON q."PlaytestId" = s."PlaytestId"
+WHERE q."Type" = 0 OR (s."Id" + q."Id") % 4 <> 0
+ORDER BY s."Id", q."Id";
 
-DROP TABLE TextAnswers;
+-- Explicit ids don't move the id sequences, so point them past the seeded rows.
+-- Otherwise the next row created through the API would reuse id 1 and fail.
+SELECT setval(pg_get_serial_sequence('"Users"', 'Id'), (SELECT MAX("Id") FROM "Users"));
+SELECT setval(pg_get_serial_sequence('"Games"', 'Id'), (SELECT MAX("Id") FROM "Games"));
+SELECT setval(pg_get_serial_sequence('"Playtests"', 'Id'), (SELECT MAX("Id") FROM "Playtests"));
+SELECT setval(pg_get_serial_sequence('"Questions"', 'Id'), (SELECT MAX("Id") FROM "Questions"));
+SELECT setval(pg_get_serial_sequence('"Submissions"', 'Id'), (SELECT MAX("Id") FROM "Submissions"));
 
 COMMIT;
