@@ -26,7 +26,8 @@ public static class GameEndpoints
         {
             var game = await service.AddAsync(request, user.GetUserId());
             return Results.Created($"/games/{game.Id}", game);
-        });
+        })
+        .RequireAuthorization();
 
         group.MapPut("/{id}", async (int id, CreateGameRequest request, IGameService service, ClaimsPrincipal user) =>
         {
