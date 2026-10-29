@@ -1,4 +1,3 @@
-using System;
 using Playtestr.Api.Dtos;
 using Playtestr.Api.Models;
 

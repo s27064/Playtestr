@@ -1,9 +1,7 @@
-using System;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
-using Playtestr.Api.Data;
 using Playtestr.Api.Models;
 
 namespace Playtestr.Api.Services.Auth;

@@ -1,5 +1,4 @@
 using Playtestr.Api.Dtos;
-using Playtestr.Api.Models;
 
 namespace Playtestr.Api.Services.Games;
 

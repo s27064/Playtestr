@@ -1,8 +1,6 @@
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Playtestr.Api.Dtos;
-using Playtestr.Api.Models;
 using Playtestr.Api.Services.Auth;
 
 namespace Playtestr.Api.Endpoints;
