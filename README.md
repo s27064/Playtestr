@@ -1,6 +1,6 @@
 # Playtestr
 
-![Build and test](https://github.com/OWNER/REPO/actions/workflows/build.yml/badge.svg)
+[![Build and test](https://github.com/s27064/Playtestr/actions/workflows/build.yml/badge.svg)](https://github.com/s27064/Playtestr/actions/workflows/build.yml)
 
 REST API for collecting feedback from game playtests. I made it to learn ASP.NET Core and EF Core.
 
