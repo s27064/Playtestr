@@ -20,6 +20,7 @@ namespace Playtestr.Api.Migrations
                 .HasAnnotation("ProductVersion", "10.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
+            NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "citext");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("Playtestr.Api.Models.Answer", b =>
@@ -40,15 +41,22 @@ namespace Playtestr.Api.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Text")
-                        .HasColumnType("text");
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("QuestionId");
 
-                    b.HasIndex("SubmissionId");
+                    b.HasIndex("SubmissionId", "QuestionId")
+                        .IsUnique();
 
-                    b.ToTable("Answers");
+                    b.ToTable("Answers", t =>
+                        {
+                            t.HasCheckConstraint("CK_Answers_Rating", "\"Rating\" BETWEEN 1 AND 5");
+
+                            t.HasCheckConstraint("CK_Answers_RatingOrText", "(\"Rating\" IS NULL) <> (\"Text\" IS NULL)");
+                        });
                 });
 
             modelBuilder.Entity("Playtestr.Api.Models.Game", b =>
@@ -61,11 +69,13 @@ namespace Playtestr.Api.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<int>("OwnerId")
                         .HasColumnType("integer");
@@ -77,7 +87,10 @@ namespace Playtestr.Api.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Games");
+                    b.ToTable("Games", t =>
+                        {
+                            t.HasCheckConstraint("CK_Games_ReleaseYear", "\"ReleaseYear\" BETWEEN 1950 AND 2100");
+                        });
                 });
 
             modelBuilder.Entity("Playtestr.Api.Models.Playtest", b =>
@@ -93,14 +106,16 @@ namespace Playtestr.Api.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<int>("GameId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
 
@@ -132,7 +147,10 @@ namespace Playtestr.Api.Migrations
 
                     b.HasIndex("PlaytestId");
 
-                    b.ToTable("Questions");
+                    b.ToTable("Questions", t =>
+                        {
+                            t.HasCheckConstraint("CK_Questions_Type", "\"Type\" IN (0, 1)");
+                        });
                 });
 
             modelBuilder.Entity("Playtestr.Api.Models.Submission", b =>
@@ -157,9 +175,10 @@ namespace Playtestr.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PlaytestId");
-
                     b.HasIndex("UserId");
+
+                    b.HasIndex("PlaytestId", "UserId")
+                        .IsUnique();
 
                     b.ToTable("Submissions");
                 });
@@ -174,7 +193,8 @@ namespace Playtestr.Api.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
@@ -182,7 +202,7 @@ namespace Playtestr.Api.Migrations
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("citext");
 
                     b.HasKey("Id");
 

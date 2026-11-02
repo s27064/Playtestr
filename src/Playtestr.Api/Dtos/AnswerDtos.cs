@@ -6,7 +6,7 @@ public record CreateAnswerRequest
 (
     int QuestionId,
     [Range(1, 5)] int? Rating,
-    string? Text
+    [MaxLength(2000)] string? Text
 );
 
 public record AnswerResponse

@@ -1,5 +1,8 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace Playtestr.Api.Models;
 
+[Index(nameof(PlaytestId), nameof(UserId), IsUnique = true)]
 public class Submission
 {
     public int Id { get; set; }
