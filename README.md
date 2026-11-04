@@ -6,36 +6,9 @@ REST API for collecting feedback from game playtests. I made it to learn ASP.NET
 
 The idea: a developer adds their game, creates a playtest and writes some questions (either a 1-5 rating or a text answer). Players log in and answer them, and they can choose to be anonymous. Then the developer can see a summary of the playtest with average ratings and all the text answers.
 
-This is what the summary looks like (shortened):
+This is what the summary of a playtest looks like:
 
-```json
-{
-  "playtestId": 3,
-  "title": "Closed beta",
-  "submissionCount": 15,
-  "questionSummaries": [
-    {
-      "questionId": 11,
-      "text": "How well did co-op work with your group?",
-      "type": "Rating",
-      "averageRating": 4.33,
-      "answerCount": 15,
-      "textAnswers": []
-    },
-    {
-      "questionId": 14,
-      "text": "What would you change first?",
-      "type": "Text",
-      "averageRating": null,
-      "answerCount": 11,
-      "textAnswers": [
-        "Difficulty spiked out of nowhere halfway through.",
-        "Would be nice to have a way to skip dialogue."
-      ]
-    }
-  ]
-}
-```
+![Playtest summary in Scalar](docs/Result_Screenshot_Scalar.png)
 
 Built with .NET 10 (minimal APIs), EF Core + PostgreSQL, JWT auth, Scalar for API docs, xUnit for tests and Docker.
 
